@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html data-page-node-id="nrIvVEhI4DxqG55JWwtYXM" lang="zh-CN">
+<head data-page-node-id="znStQDMvFAFkXpmI1rtyLK">
+<script data-page-node-id="0oX6zr9BBCrSBY53DlNCkT" src="/page/page_comm/inject.js"></script>
+<meta data-page-node-id="8uKNG8MjOuPvZEmOJA2pZ4" charset="UTF-8">
+<meta data-page-node-id="w5XZ4I43Tfyr7PUS95qvpk" content="width=device-width, initial-scale=1.0" name="viewport">
+<title data-page-node-id="mYF2BSYmVgpz3SUFmsiggw" data-pnid-children="lXyyGrCJxAFiYkYh5o0sSS">中民康悦 · 微信小程序原型</title>
+<style data-page-node-id="QAMZIPhCuzMhBHPL6HKZtT" data-pnid-children="NG47azNQte795Q0lXRbygz">
+:root{
+  --red:#E8710A; --red-dark:#C25A05; --red-soft:#FFF1E4; --gold:#E9A23B;
+  --paper:#F7F5F0; --card:#FFFFFF; --ink:#252525; --ink2:#5C574F;
+  --line:#EAE4D9; --green:#2F8A5B; --blue:#2A6FB0;
+  --shell:#1D1E21; --panel:#26282C; --panel2:#2E3136; --stroke:#3B3F45;
+  --shelltxt:#E6E6E6; --shellmuted:#9EA3AA;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--shell);color:var(--shelltxt);overflow:hidden}
+
+/* ===== Axure 风格外壳 ===== */
+.topbar{height:52px;background:var(--panel);border-bottom:1px solid var(--stroke);display:flex;align-items:center;padding:0 16px;gap:14px;flex-shrink:0}
+.topbar .brand{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;letter-spacing:.3px}
+.topbar .brand .mark{width:24px;height:24px;border-radius:6px;background:var(--red);display:flex;align-items:center;justify-content:center;color:#fff}
+.topbar .divider{width:1px;height:22px;background:var(--stroke)}
+.topbar .crumb{font-size:12px;color:var(--shellmuted);flex:1}
+.topbar .crumb b{color:#fff;font-weight:600}
+.tool{display:flex;align-items:center;gap:6px;background:var(--panel2);border:1px solid var(--stroke);color:var(--shelltxt);border-radius:6px;padding:6px 11px;font-size:12px;cursor:pointer;white-space:nowrap}
+.tool:hover{background:#3A3E44}
+.tool.on{background:var(--red);border-color:var(--red);color:#fff}
+.zoom{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--shellmuted)}
+.zoom button{width:24px;height:24px;border-radius:5px;border:1px solid var(--stroke);background:var(--panel2);color:var(--shelltxt);cursor:pointer;font-size:14px}
+
+.workspace{display:flex;height:calc(100vh - 52px)}
+.side{width:236px;background:var(--panel);border-right:1px solid var(--stroke);overflow-y:auto;flex-shrink:0}
+.side h3{font-size:11px;letter-spacing:1.5px;color:var(--shellmuted);padding:18px 16px 8px;font-weight:600}
+.tree-group{padding:0 8px 8px}
+.tree-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:6px;font-size:13px;color:#CFD2D6;cursor:pointer;line-height:1.3}
+.tree-item:hover{background:var(--panel2)}
+.tree-item.active{background:var(--red);color:#fff}
+.tree-item .idx{font-size:10px;opacity:.65;min-width:16px;font-variant-numeric:tabular-nums}
+.tree-item svg{width:14px;height:14px;flex-shrink:0;opacity:.8}
+.side .foot{padding:16px;font-size:11px;line-height:1.7;color:var(--shellmuted);border-top:1px solid var(--stroke);margin-top:8px}
+
+.canvas{flex:1;background:radial-gradient(ellipse at 50% 30%,#2A2C31 0%,var(--shell) 70%);display:flex;align-items:center;justify-content:center;overflow:auto;position:relative}
+.canvas-inner{display:flex;flex-direction:column;align-items:center;gap:12px;padding:24px}
+.phone-label{font-size:12px;color:var(--shellmuted)}
+
+/* ===== 手机 ===== */
+.phone{width:390px;height:844px;background:#0B0B0B;border-radius:46px;padding:9px;box-shadow:0 24px 70px rgba(0,0,0,.55),0 0 0 2px #3A3A3A;flex-shrink:0}
+.screen{width:100%;height:100%;border-radius:38px;overflow:hidden;background:var(--paper);display:flex;flex-direction:column;position:relative}
+.statusbar{height:42px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:13px;font-weight:700;color:var(--ink);position:relative;z-index:5}
+.statusbar .right{display:flex;align-items:center;gap:5px}
+.capsule{position:absolute;right:12px;top:52px;z-index:8;display:flex;align-items:center;gap:9px;height:30px;padding:0 10px;border:1px solid rgba(0,0,0,.08);border-radius:16px;background:rgba(255,255,255,.82);backdrop-filter:blur(6px)}
+.capsule i{width:4px;height:4px;border-radius:50%;background:#333;box-shadow:6px 0 0 #333,-6px 0 0 #333;display:block;margin:0 4px}
+.capsule .dot{width:15px;height:15px;border:2px solid #333;border-radius:50%;position:relative}
+.capsule .dot::after{content:"";position:absolute;inset:3.5px;border:2px solid #333;border-radius:50%}
+.navbar{height:52px;flex-shrink:0;display:flex;align-items:center;padding:0 16px;gap:10px;background:var(--card);border-bottom:1px solid var(--line);position:relative;z-index:4}
+.navbar .back{width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:50%}
+.navbar .back:hover{background:#F3F0EA}
+.navbar .title{font-size:18px;font-weight:700;color:var(--ink);flex:1}
+.navbar .nav-act{display:flex;gap:12px;color:var(--ink)}
+.scroll{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden}
+.scroll::-webkit-scrollbar{width:0}
+.tabbar{height:70px;flex-shrink:0;background:#fff;border-top:1px solid var(--line);display:flex;padding-bottom:10px}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#8C867D;font-size:11px;cursor:pointer}
+.tab.active{color:var(--red);font-weight:700}
+.tab svg{width:23px;height:23px}
+/* 模块跳转导航：每页底部常驻 */
+.modnav{height:54px;flex-shrink:0;background:#fff;border-top:1px solid var(--line);display:flex;padding-bottom:4px;position:relative;z-index:6;margin-top:auto}
+.modnav .mi{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#8C867D;font-size:10px;cursor:pointer}
+.modnav .mi.on{color:var(--red);font-weight:800}
+.modnav .mi:active{background:#F7F4EE}
+
+/* ===== 手机内通用组件 ===== */
+.hero{background:linear-gradient(135deg,var(--red) 0%,#F3851C 55%,#F5A03A 100%);color:#fff;padding:18px 20px 22px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.08);right:-50px;top:-70px}
+.hero::before{content:"";position:absolute;width:120px;height:120px;border-radius:50%;border:1px solid rgba(255,255,255,.16);right:30px;top:40px}
+.hero .top{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:2}
+.hero .hi{font-size:23px;font-weight:800;letter-spacing:.5px}
+.hero .sub{font-size:12px;opacity:.9;margin-top:6px}
+.avatar{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;color:#fff}
+.bell-btn{position:relative;cursor:pointer;color:#fff}
+.bell-btn .badge{position:absolute;top:-3px;right:-4px;min-width:15px;height:15px;background:var(--gold);color:#7A3E00;border-radius:8px;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 3px;border:1px solid #fff}
+.searchbar{margin:14px 16px 0;background:#fff;border-radius:12px;height:46px;display:flex;align-items:center;padding:0 14px;gap:9px;box-shadow:0 4px 16px rgba(120,60,40,.09);position:relative;z-index:3;color:#9C958B;font-size:15px;cursor:pointer}
+.sec{margin:20px 16px 0}
+.sec-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.sec-h .t{font-size:18px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:7px}
+.sec-h .t::before{content:"";width:4px;height:17px;background:var(--red);border-radius:2px}
+.sec-h .more{font-size:13px;color:var(--ink2);display:flex;align-items:center;cursor:pointer}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px}
+.notice{margin:14px 16px 0;background:#FFF8E9;border:1px solid #F3DFB8;border-radius:12px;padding:12px 13px;display:flex;align-items:center;gap:10px;font-size:13px;color:#6B4A16;cursor:pointer}
+.notice .tag{background:var(--gold);color:#fff;border-radius:5px;padding:3px 7px;font-size:11px;font-weight:700;flex-shrink:0}
+.notice .txt{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px 2px}
+.qitem{display:flex;flex-direction:column;align-items:center;gap:7px;padding:10px 0;cursor:pointer;border-radius:10px}
+.qitem:hover{background:#FAF7F1}
+.qitem .ic{width:50px;height:50px;border-radius:15px;display:flex;align-items:center;justify-content:center;color:#fff}
+.qitem .lb{font-size:13px;color:var(--ink);font-weight:600}
+.svc{display:flex;gap:12px;padding:12px;margin-bottom:10px;cursor:pointer;background:#fff;border:1px solid var(--line);border-radius:14px}
+.svc .pic{width:90px;height:90px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;position:relative;overflow:hidden}
+.svc .pic::after{content:"";position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,.18),transparent 60%)}
+.svc .info{flex:1;min-width:0;display:flex;flex-direction:column}
+.svc .nm{font-size:16px;font-weight:800;color:var(--ink)}
+.svc .ds{font-size:12px;color:var(--ink2);margin-top:5px;line-height:1.5}
+.svc .tags{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap}
+.tagline{font-size:10px;color:var(--red);background:var(--red-soft);border-radius:4px;padding:2px 5px}
+.tagline.g{color:var(--green);background:#E8F5EE}
+.svc .bottom{margin-top:auto;display:flex;align-items:flex-end;justify-content:space-between}
+.price{color:var(--red);font-weight:800;font-size:19px}
+.price small{font-size:12px;font-weight:500}
+.rate{font-size:11px;color:#9A938A}
+.btn{background:var(--red);color:#fff;border:none;border-radius:22px;padding:0 18px;height:36px;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn:hover{background:var(--red-dark)}
+.btn.ghost{background:#fff;color:var(--red);border:1.5px solid var(--red)}
+.btn.gray{background:#EDE9E1;color:var(--ink2)}
+.btn.big{height:50px;font-size:17px;flex:1;border-radius:25px}
+.bottombar{height:72px;flex-shrink:0;background:#fff;border-top:1px solid var(--line);display:flex;align-items:center;padding:0 14px;gap:10px}
+.hint{font-size:11px;color:#9A938A;text-align:center;padding:14px 0 24px}
+
+/* 表单 */
+.form-card{margin:12px 14px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.frow{display:flex;align-items:center;min-height:54px;padding:10px 14px;border-bottom:1px solid var(--line);gap:10px}
+.frow:last-child{border-bottom:none}
+.frow .lb{font-size:15px;font-weight:700;color:var(--ink);width:76px;flex-shrink:0}
+.frow .val{flex:1;font-size:15px;color:var(--ink2);display:flex;align-items:center;gap:6px}
+.frow .val.strong{color:var(--ink);font-weight:600}
+.frow .edit{color:#9A938A}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:8px 14px;border:1px solid var(--line);border-radius:9px;background:#fff;font-size:14px;color:var(--ink2);cursor:pointer;min-height:38px;display:flex;align-items:center}
+.chip.active{border-color:var(--red);color:var(--red);background:var(--red-soft);font-weight:700}
+.stepper{display:flex;align-items:center;gap:14px}
+.stepper b{width:22px;height:22px;border:1px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink)}
+.stepper b:hover{border-color:var(--red);color:var(--red)}
+.stepper span{font-size:16px;font-weight:700;min-width:16px;text-align:center}
+textarea{width:100%;border:none;outline:none;resize:none;font-family:inherit;font-size:14px;color:var(--ink2);background:transparent;line-height:1.6}
+
+/* 分类页 */
+.cat-wrap{position:absolute;top:94px;bottom:54px;left:0;right:0;display:flex;background:#fff}
+.cat-rail{width:96px;background:#F5F2EC;overflow-y:auto;flex-shrink:0}
+.cat-rail div{padding:17px 8px;text-align:center;font-size:14px;color:var(--ink2);cursor:pointer;position:relative}
+.cat-rail div.active{background:#fff;color:var(--red);font-weight:800}
+.cat-rail div.active::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:4px;background:var(--red);border-radius:0 3px 3px 0}
+.cat-main{flex:1;overflow-y:auto;padding:14px}
+.cat-title{font-size:18px;font-weight:800;margin:4px 0 12px;color:var(--ink)}
+.cat-card{display:flex;gap:10px;padding:11px;border:1px solid var(--line);border-radius:12px;margin-bottom:10px;cursor:pointer}
+.cat-card .ic{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.cat-card .tx{flex:1;min-width:0}
+.cat-card .tx b{font-size:15px;color:var(--ink);display:block}
+.cat-card .tx span{font-size:12px;color:var(--ink2);display:block;margin-top:4px;line-height:1.4}
+.cat-card .tx em{font-style:normal;color:var(--red);font-weight:800;font-size:14px;display:block;margin-top:5px}
+
+/* 详情 */
+.hero-detail{height:170px;background:linear-gradient(135deg,#D8620A,#EE7A18);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;position:relative}
+.hero-detail .big-ic{width:76px;height:76px;border-radius:22px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center}
+.detail-head{padding:16px;background:#fff;border-bottom:1px solid var(--line)}
+.detail-head h2{font-size:21px;color:var(--ink)}
+.detail-head .meta{display:flex;align-items:baseline;gap:10px;margin-top:8px}
+.detail-head .meta .rate{font-size:12px}
+.kv{display:flex;padding:13px 16px;border-bottom:1px solid var(--line);font-size:14px;gap:10px;background:#fff}
+.kv .k{width:74px;color:var(--ink2);flex-shrink:0}
+.kv .v{color:var(--ink);flex:1;line-height:1.5}
+.steps{display:flex;align-items:center;padding:18px 12px;background:#fff;gap:4px}
+.steps .s{flex:1;text-align:center;font-size:11px;color:var(--ink2)}
+.steps .s i{display:block;width:26px;height:26px;border-radius:50%;background:var(--red-soft);color:var(--red);font-style:normal;font-weight:800;line-height:26px;margin:0 auto 6px}
+.steps .arr{color:#CCC;font-size:12px}
+.review{padding:14px 16px;background:#fff}
+.review .u{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:700;color:var(--ink)}
+.review .u .av{width:32px;height:32px;border-radius:50%;background:#F0D9B5;display:flex;align-items:center;justify-content:center;color:#8A5A1E}
+.review p{font-size:13px;color:var(--ink2);line-height:1.6;margin-top:9px}
+.stars{color:var(--gold);letter-spacing:2px;font-size:13px}
+
+/* 支付 / 成功 */
+.pay-hero{background:linear-gradient(160deg,#E9F6EE,#F7F5F0);padding:34px 0 26px;text-align:center;color:var(--green)}
+.pay-hero .cc{width:70px;height:70px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto}
+.pay-hero h2{font-size:22px;margin-top:12px;color:var(--ink)}
+.pay-hero p{font-size:13px;color:var(--ink2);margin-top:6px}
+.sum{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line);font-size:14px;color:var(--ink2);background:#fff}
+.sum b{color:var(--ink);font-size:15px}
+.sum.total b{color:var(--red);font-size:22px}
+.pay-method{display:flex;align-items:center;gap:10px;padding:14px 16px;background:#fff;border-bottom:1px solid var(--line)}
+.pay-method .mi{width:32px;height:32px;border-radius:8px;background:#09BB07;color:#fff;display:flex;align-items:center;justify-content:center}
+.pay-method .tx{flex:1;font-size:15px;font-weight:700;color:var(--ink)}
+.radio{width:20px;height:20px;border-radius:50%;border:2px solid #CCC;display:flex;align-items:center;justify-content:center}
+.radio.on{border-color:var(--red)}
+.radio.on::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--red)}
+
+/* 订单 */
+.tabs{display:flex;background:#fff;border-bottom:1px solid var(--line);padding:0 6px}
+.tabs div{flex:1;text-align:center;padding:13px 0;font-size:14px;color:var(--ink2);cursor:pointer;position:relative}
+.tabs div.active{color:var(--red);font-weight:800}
+.tabs div.active::after{content:"";position:absolute;bottom:0;left:22%;right:22%;height:3px;background:var(--red);border-radius:2px}
+.order{margin:12px 14px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.order .oh{display:flex;justify-content:space-between;padding:11px 13px;border-bottom:1px solid var(--line);font-size:12px;color:var(--ink2)}
+.order .oh b{color:var(--green);font-size:13px}
+.order .ob{display:flex;gap:11px;padding:13px}
+.order .ob .ic{width:52px;height:52px;border-radius:10px;background:var(--red-soft);color:var(--red);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.order .ob b{font-size:15px;color:var(--ink)}
+.order .ob p{font-size:12px;color:var(--ink2);margin-top:4px}
+.order .of{display:flex;justify-content:flex-end;gap:8px;padding:10px 13px;border-top:1px solid var(--line)}
+.mini-btn{height:32px;padding:0 13px;border-radius:16px;border:1px solid var(--line);background:#fff;font-size:12px;color:var(--ink2);cursor:pointer}
+.mini-btn.primary{border-color:var(--red);color:var(--red);font-weight:700}
+.timeline{padding:18px 16px;background:#fff}
+.tl{display:flex;gap:12px}
+.tl .dots{display:flex;flex-direction:column;align-items:center}
+.tl .dots i{width:14px;height:14px;border-radius:50%;background:var(--red);color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;font-style:normal;flex-shrink:0}
+.tl .dots i.off{background:#DDD8CE}
+.tl .dots .line{width:2px;flex:1;background:#E8E2D8;min-height:26px}
+.tl .txt{padding-bottom:18px}
+.tl .txt b{font-size:14px;color:var(--ink)}
+.tl .txt span{font-size:12px;color:var(--ink2);margin-left:8px}
+.tl .txt p{font-size:12px;color:#9A938A;margin-top:4px}
+
+/* 健康 / 活动 / 消息 / 我的 */
+.health-hero{margin:14px;background:linear-gradient(135deg,#1F7A5C,#38A376);border-radius:16px;padding:18px;color:#fff}
+.health-hero .t{font-size:13px;opacity:.9}
+.health-hero .v{font-size:28px;font-weight:800;margin-top:5px}
+.health-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 14px}
+.hcard{background:#fff;border:1px solid var(--line);border-radius:13px;padding:14px}
+.hcard .l{font-size:12px;color:var(--ink2)}
+.hcard .n{font-size:23px;font-weight:800;color:var(--ink);margin-top:5px}
+.hcard .n small{font-size:12px;color:var(--ink2);font-weight:500}
+.hcard .st{font-size:11px;color:var(--green);margin-top:5px}
+.bar{height:6px;background:#EEEAE2;border-radius:3px;margin-top:9px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--green);border-radius:3px}
+.act{margin:12px 14px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.act .cover{height:96px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;font-weight:800;letter-spacing:2px}
+.act .ab{padding:12px 13px}
+.act .ab b{font-size:16px;color:var(--ink)}
+.act .ab p{font-size:12px;color:var(--ink2);margin-top:6px;display:flex;gap:12px}
+.msg{display:flex;gap:11px;padding:14px;background:#fff;border-bottom:1px solid var(--line);cursor:pointer}
+.msg .mi{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.msg .tx{flex:1;min-width:0}
+.msg .tx b{font-size:15px;color:var(--ink)}
+.msg .tx p{font-size:12px;color:var(--ink2);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msg .tx time{font-size:11px;color:#A9A299;float:right}
+/* AI 客服 */
+.ai-wrap{flex:1 1 auto;min-height:0;overflow-y:auto;background:var(--paper);padding:14px}
+.ai-wrap::-webkit-scrollbar{width:0}
+.ai-intro{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px}
+.ai-avatar{width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,var(--red),#F5A03A);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ai-intro b{font-size:15px;color:var(--ink)}
+.ai-intro p{font-size:11px;color:var(--ink2);margin-top:3px}
+.ai-online{margin-left:auto;font-size:11px;color:var(--green);background:#E8F5EE;border-radius:10px;padding:3px 8px}
+.ai-tip{margin:12px 2px 0;padding:12px 14px;background:#fff;border:1px solid var(--line);border-radius:12px;border-top-left-radius:3px;font-size:13px;color:var(--ink2);line-height:1.65}
+.ai-label{font-size:13px;font-weight:800;color:var(--ink);margin:18px 2px 10px}
+.ai-qa{display:flex;flex-direction:column;gap:8px}
+.ai-qbtn{display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid var(--line);border-radius:11px;padding:12px 14px;font-size:14px;color:var(--ink);cursor:pointer}
+.ai-qbtn:hover{border-color:var(--red);color:var(--red)}
+.ai-qbtn svg{color:var(--red)}
+.ai-log{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.ai-msg{max-width:86%;padding:11px 13px;border-radius:12px;font-size:13px;line-height:1.65}
+.ai-msg.q{align-self:flex-end;background:var(--red);color:#fff;border-top-right-radius:3px}
+.ai-msg.a{align-self:flex-start;background:#fff;color:var(--ink2);border:1px solid var(--line);border-top-left-radius:3px}
+.ai-inputbar{height:58px;flex-shrink:0;background:#fff;border-top:1px solid var(--line);display:flex;align-items:center;gap:8px;padding:0 12px}
+.ai-inputbar input{flex:1;height:40px;border:1px solid var(--line);border-radius:20px;background:var(--paper);padding:0 14px;font-size:14px;outline:none;color:var(--ink)}
+.ai-voice{width:36px;height:36px;border-radius:50%;background:var(--red-soft);color:var(--red);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.ai-banner{display:flex;align-items:center;gap:11px;background:linear-gradient(120deg,#FFF3E4,#FFE9D2);border:1px solid #F5DFC4;border-radius:13px;padding:12px 13px;cursor:pointer}
+.ai-banner-ic{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--red),#F5A03A);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ai-banner b{display:block;font-size:15px;color:var(--ink)}
+.ai-banner span{display:block;font-size:12px;color:var(--ink2);margin-top:3px}
+.ai-banner>svg{color:var(--red)}
+.profile-head{background:linear-gradient(135deg,var(--red),#E87D29);padding:26px 18px 22px;color:#fff;display:flex;align-items:center;gap:14px;flex-shrink:0}
+.profile-head .av{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.22);border:2px solid rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center}
+.profile-head b{font-size:21px}
+.profile-head p{font-size:12px;opacity:.9;margin-top:6px}
+.vip{margin:14px 14px 0;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;display:flex}
+.vip>div{flex:1;text-align:center;border-right:1px solid var(--line)}
+.vip>div:last-child{border-right:none}
+.vip b{font-size:19px;color:var(--ink);display:block}
+.vip span{font-size:11px;color:var(--ink2)}
+.plist{margin:14px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.prow{display:flex;align-items:center;gap:11px;padding:14px;border-bottom:1px solid var(--line);font-size:15px;color:var(--ink);cursor:pointer}
+.prow:last-child{border-bottom:none}
+.prow .mi{width:30px;height:30px;border-radius:9px;background:var(--red-soft);color:var(--red);display:flex;align-items:center;justify-content:center}
+.prow .tx{flex:1}
+.prow .ex{font-size:12px;color:#9A938A}
+
+/* ===== 右侧标注 ===== */
+.inspect{width:280px;background:var(--panel);border-left:1px solid var(--stroke);overflow-y:auto;flex-shrink:0}
+.inspect .hd{padding:17px 16px;border-bottom:1px solid var(--stroke)}
+.inspect .hd h2{font-size:15px;font-weight:700}
+.inspect .hd p{font-size:11px;color:var(--shellmuted);margin-top:5px;line-height:1.6}
+.inspect .blk{padding:16px;border-bottom:1px solid var(--stroke)}
+.inspect h4{font-size:11px;letter-spacing:1.2px;color:var(--shellmuted);margin-bottom:11px;font-weight:600}
+.inspect .desc{font-size:12px;line-height:1.85;color:#C4C7CB}
+.inspect ul{list-style:none}
+.inspect li{font-size:12px;color:#C4C7CB;line-height:1.7;padding:7px 0 7px 16px;position:relative;border-bottom:1px dashed #383C41}
+.inspect li:last-child{border-bottom:none}
+.inspect li::before{content:"";position:absolute;left:2px;top:14px;width:5px;height:5px;border-radius:50%;background:var(--red)}
+.inspect .badge{display:inline-block;background:#3A3E44;color:#D8DBDE;font-size:10px;padding:3px 7px;border-radius:4px;margin:0 5px 5px 0}
+.path{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.path .badge{background:var(--red);color:#fff}
+
+/* 预览模式隐藏侧栏 */
+body.preview .side,body.preview .inspect{display:none}
+body.preview .topbar .crumb{display:none}
+svg{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+</style>
+</head>
+<body data-page-node-id="6RtRv8G3txJUgzeaVowuRw">
+
+<svg data-page-node-id="4OTqPiZxoh1FE3KOcTocVE" xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol data-page-node-id="7uephRvwqT6qZNfRVj7PHa" id="i-home" viewBox="0 0 24 24"><path data-page-node-id="oSizrdTVfxmHaORpsMwnQo" d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></symbol>
+  <symbol data-page-node-id="0SIsGOnLQZrmwPACLW6lfd" id="i-grid" viewBox="0 0 24 24"><rect data-page-node-id="FE2rlQ91PlqlwnNOk8Glad" height="7" rx="1.5" width="7" x="3" y="3"/><rect data-page-node-id="k6uoH0jDwFhXxZfx7YFNJP" height="7" rx="1.5" width="7" x="14" y="3"/><rect data-page-node-id="LUyeMkA3t3u1EA6TN4YQPa" height="7" rx="1.5" width="7" x="3" y="14"/><rect data-page-node-id="S4bAVvgaFqSGdRTqE3XNyV" height="7" rx="1.5" width="7" x="14" y="14"/></symbol>
+  <symbol data-page-node-id="RTTqyW9nG0g4RhJ1ugyySi" id="i-order" viewBox="0 0 24 24"><path data-page-node-id="9V3vW70vQkE1Mly6CLfIsC" d="M6 2h12v20l-3-2-3 2-3-2-3 2z"/><path data-page-node-id="zTHOqm9yeesAOnPk81As5P" d="M9 7h6M9 11h6M9 15h4"/></symbol>
+  <symbol data-page-node-id="gIIwWCKhwXt9XgXApuFTd9" id="i-heart" viewBox="0 0 24 24"><path data-page-node-id="rDl3dtsiyAvzdxGIlhzUDz" d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.7-7.5 1.1-1.1a5.5 5.5 0 0 0 0-7.8z"/></symbol>
+  <symbol data-page-node-id="xwG2QpCthYBk30FUgTgKmd" id="i-user" viewBox="0 0 24 24"><circle data-page-node-id="VdlsFW4OXOgM5tKmg9aUu9" cx="12" cy="8" r="4"/><path data-page-node-id="cXAGMhElivvXvftWlVTPlz" d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol data-page-node-id="MCXxjFFPTrVy7ParHvps66" id="i-search" viewBox="0 0 24 24"><circle data-page-node-id="2jQ85nn3VaTtWeD3CMQpPY" cx="11" cy="11" r="7"/><path data-page-node-id="m4BXcNDPGo9Bb2QweoSlmy" d="m20 20-3.5-3.5"/></symbol>
+  <symbol data-page-node-id="3THwB8Y07S8QCUZHZkHiYi" id="i-bell" viewBox="0 0 24 24"><path data-page-node-id="ZYQGKtjUqhIemTRgee3z0M" d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9z"/><path data-page-node-id="yRCSLCFTTVjSDUglWnwYPH" d="M10 21h4"/></symbol>
+  <symbol data-page-node-id="Ysr672AlUmPtN3KBljn11C" id="i-right" viewBox="0 0 24 24"><path data-page-node-id="PEFth9AAGQi37oyr76miCU" d="m9 18 6-6-6-6"/></symbol>
+  <symbol data-page-node-id="VdkdIMDlqDMEhiMNj6riYN" id="i-left" viewBox="0 0 24 24"><path data-page-node-id="cbydWP89i6nfY5w1rfffXq" d="m15 18-6-6 6-6"/></symbol>
+  <symbol data-page-node-id="0HJMSJNDph8Yt35nkzOyOY" id="i-phone" viewBox="0 0 24 24"><path data-page-node-id="IMUQYRrr2bJXKPgMbFXdVh" d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.7 2z"/></symbol>
+  <symbol data-page-node-id="6CvAdc7ZuOG4mh59TvZVjB" id="i-cal" viewBox="0 0 24 24"><rect data-page-node-id="Arytve4yDNPiQsDAzV6aLj" height="16" rx="2" width="18" x="3" y="5"/><path data-page-node-id="ABxq4Wnh1CReVqvww7Lnul" d="M16 3v4M8 3v4M3 10h18"/></symbol>
+  <symbol data-page-node-id="by2IytS73GwRtZJYw4jPpG" id="i-clock" viewBox="0 0 24 24"><circle data-page-node-id="GfKr5qYWOBUKJ52urHljId" cx="12" cy="12" r="9"/><path data-page-node-id="Fagbnkyamnj1jZuSZ8N7No" d="M12 7v5l3 2"/></symbol>
+  <symbol data-page-node-id="zq3URmdeEVPb6mgeUawgJM" id="i-pin" viewBox="0 0 24 24"><path data-page-node-id="nmcRsdGWSbdkRQEbcx4raK" d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0z"/><circle data-page-node-id="xhIJwud6bPOsI7Io3fDgUf" cx="12" cy="10" r="3"/></symbol>
+  <symbol data-page-node-id="FoUJ3CzN47ZCXTnWBlV1wn" id="i-check" viewBox="0 0 24 24"><path data-page-node-id="iXZPzTXZgH8NFwKxGMstMH" d="m5 12 5 5L20 7"/></symbol>
+  <symbol data-page-node-id="gYUlrt67vklz7h923UVJxJ" id="i-shield" viewBox="0 0 24 24"><path data-page-node-id="a1eRfYX7q5esqtA4gNdlgA" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path data-page-node-id="2XU7PXatKEYH2wX3C755cf" d="m9 12 2 2 4-4"/></symbol>
+  <symbol data-page-node-id="d2e9pgT7MCbvZLmt65hAK8" id="i-star" viewBox="0 0 24 24"><path data-page-node-id="nTBKwthEzWcf6nfue0bquF" d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8l-6.2 3.2L7 14.2 2 9.3l6.9-1z"/></symbol>
+  <symbol data-page-node-id="MQ9M3uMD6JJmW3vsdZ1X9g" id="i-plus" viewBox="0 0 24 24"><path data-page-node-id="2qyhZq0OZFRM6Q2pei6ZAC" d="M12 5v14M5 12h14"/></symbol>
+  <symbol data-page-node-id="V49M5FPUrmZqdX16omUplb" id="i-minus" viewBox="0 0 24 24"><path data-page-node-id="S5NsjBvR0Wr6phmsOyuthZ" d="M5 12h14"/></symbol>
+  <symbol data-page-node-id="LyqZ7cbOZIL5OQ2neAl188" id="i-back" viewBox="0 0 24 24"><path data-page-node-id="CQmv8XH3GSmlB7GuaQCRas" d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+  <symbol data-page-node-id="GpRHGn5jUdUUQXrBDlgvwG" id="i-x" viewBox="0 0 24 24"><path data-page-node-id="tZVp2vvSQkJ5oDmbASbMC8" d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol data-page-node-id="wNdvKzrTlI3iEmfcMvKIXi" id="i-set" viewBox="0 0 24 24"><circle data-page-node-id="x3lYVCjyBZitCiqr4dkUw6" cx="12" cy="12" r="3"/><path data-page-node-id="SgwnpNp3UzIoqzH2eSH3u0" d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21h-4v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1-2.8-2.8.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3v-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 2.8-2.8.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5V3h4v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1 2.8 2.8-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1H21v4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+  <symbol data-page-node-id="3T7CVyqUShWZRRSAnbzVgj" id="i-help" viewBox="0 0 24 24"><circle data-page-node-id="Ip3PxeGSFkOssaceCkPWTh" cx="12" cy="12" r="9"/><path data-page-node-id="qUhsXPJ1CcGXe5FoKdFp8n" d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17h.01"/></symbol>
+  <symbol data-page-node-id="VJuAACv6QUuKoFw7T1V9Jw" id="i-out" viewBox="0 0 24 24"><path data-page-node-id="jx8ladG24HLuQT9r256Jpr" d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+  <symbol data-page-node-id="pKVeHuKc9xyYPmDpuAF2he" id="i-activity" viewBox="0 0 24 24"><path data-page-node-id="2LqfYvxLyuVoe8bAmAkmQT" d="M3 12h4l3-8 4 16 3-8h4"/></symbol>
+  <symbol data-page-node-id="1uHVRDN3pNZ3R0rPo0DD8W" id="i-steth" viewBox="0 0 24 24"><path data-page-node-id="2zz7rlAK2ksHXiGRYFvjNK" d="M6 3v6a5 5 0 0 0 10 0V3"/><path data-page-node-id="9fBUqIT0pUIpTkFBVr4XJK" d="M4 3h4M14 3h4M11 14v2a4 4 0 0 0 8 0v-1"/><circle data-page-node-id="wkLa15fXSj8OVXuR08Rgub" cx="19" cy="13" r="2"/></symbol>
+  <symbol data-page-node-id="pSaXt2AMD2Njfl5fXHFqhR" id="i-pill" viewBox="0 0 24 24"><path data-page-node-id="ZSgFhr4ZCDMfJNGA4ChlOK" d="m10.5 20.5-7-7a5 5 0 0 1 7-7l7 7a5 5 0 0 1-7 7z"/><path data-page-node-id="U4Mo10KT8IE1Bu8zGOXihB" d="m8.5 8.5 7 7"/></symbol>
+  <symbol data-page-node-id="6z5s17SyHJ50rcZhYElG9o" id="i-book" viewBox="0 0 24 24"><path data-page-node-id="O6QI47FqwYiZwpwkRJZoxz" d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path data-page-node-id="wtAcvrgkDA0vszeNdUEd0P" d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol>
+  <symbol data-page-node-id="mCpZXeuD4YaW9VmmlaBDVc" id="i-users" viewBox="0 0 24 24"><circle data-page-node-id="iBTw9o1xq8uTVbzyrJbZGw" cx="9" cy="8" r="3.5"/><path data-page-node-id="AWzS0UrorTA3YREeoGSNjf" d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path data-page-node-id="YnRsP6d8r0GB7ayeOL6ysC" d="M16 5a3.5 3.5 0 0 1 0 7M18 20a6.5 6.5 0 0 0-2-4.7"/></symbol>
+  <symbol data-page-node-id="RuLc6Sn96XX4ifGK0vikrK" id="i-chat" viewBox="0 0 24 24"><path data-page-node-id="4jdh0xtDZFZZqtFKo2ZDtY" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+  <symbol data-page-node-id="Ea0gcJTthKzTY8CKRCRY1D" id="i-gift" viewBox="0 0 24 24"><rect data-page-node-id="9Ld5B6fXDAP2chD5NTNrhJ" height="13" rx="2" width="18" x="3" y="8"/><path data-page-node-id="F4U9l81WQbHL7kjdgC5F30" d="M12 8v13M3 12h18"/><path data-page-node-id="sGZgfr5Gsge3iJoaDxo4CU" d="M12 8S9.5 3 7.5 4.5 9 8 12 8zM12 8s2.5-5 4.5-3.5S15 8 12 8z"/></symbol>
+  <symbol data-page-node-id="g4z1qUh6UtZfCVN2fONCdE" id="i-wallet" viewBox="0 0 24 24"><rect data-page-node-id="120rVfO7Wn7sBsVmBt9HBW" height="14" rx="2" width="18" x="3" y="6"/><path data-page-node-id="VHVtOICw2wabf0Huk20FK0" d="M3 10h18M16 15h2"/></symbol>
+  <symbol data-page-node-id="qJb8OgYHu04gT6PgWS8MtZ" id="i-file" viewBox="0 0 24 24"><path data-page-node-id="dkxiZ3tXO35RweDVvIRUeQ" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path data-page-node-id="XaOUeoqAuXikOHUrg9dLwp" d="M14 2v6h6M8 13h8M8 17h6"/></symbol>
+  <symbol data-page-node-id="VD1cXwAF6UBPm1avZ2usd6" id="i-cam" viewBox="0 0 24 24"><path data-page-node-id="19O8iFKB2KPlwfRxnmeeP9" d="M4 7h3l2-3h6l2 3h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/><circle data-page-node-id="pohAbNZAVE9vph8SRPK2Le" cx="12" cy="13" r="3.5"/></symbol>
+  <symbol data-page-node-id="rGhZQZ6NkgyzXyuX1N1pcF" id="i-wheel" viewBox="0 0 24 24"><circle data-page-node-id="NaHXRYQWFLjGq85ECYy3Vj" cx="8" cy="4" r="2"/><path data-page-node-id="CpTLABGd0qbVnidBMK1a3X" d="M8 8v6h6l3 6"/><path data-page-node-id="IidayqWUs30PiQHysGCTWP" d="M6 14a6 6 0 1 0 8 6"/></symbol>
+  <symbol data-page-node-id="kbSbmMB8wQu4MiqJb6DrJq" id="i-utens" viewBox="0 0 24 24"><path data-page-node-id="X9BBT9cflGTfVxFQzon7uw" d="M4 3v7a3 3 0 0 0 6 0V3M7 3v18M17 3c-2 2-2 6-2 9h4V3M17 12v9"/></symbol>
+  <symbol data-page-node-id="yrJg1C7MvOlpAzfAzOLGcL" id="i-broom" viewBox="0 0 24 24"><path data-page-node-id="ZNcpsuoAMWAVAnnFY0zcVB" d="m13 3 8 8M9 11l4-4 4 4-4 4zM9 11c-3 0-6 3-6 7 0 1 1 2 2 2h8c1 0 2-1 2-2 0-4-3-7-6-7z"/></symbol>
+  <symbol data-page-node-id="DDJW67gfzTWeNSvRp4hES2" id="i-wechat" viewBox="0 0 24 24"><path data-page-node-id="6vHlheAA03OBgrmCtWAwt1" d="M9 4C5 4 2 6.6 2 9.8c0 1.8 1 3.4 2.6 4.5L4 17l3-1.5c.6.2 1.3.3 2 .3h.7M12 20c4 0 7-2.6 7-5.8S16 8.4 12 8.4s-7 2.6-7 5.8 3 5.8 7 5.8z"/><path data-page-node-id="oWFc90PssuQaf9Qw4CxsoT" d="M9.5 13h.01M14.5 13h.01"/></symbol>
+</svg>
+
+<div data-page-node-id="7Awb8Q9Fvfu646TEF8GKET" class="topbar">
+  <div data-page-node-id="uS8euRHQBtopRLxDKO98LZ" class="brand"><span data-page-node-id="sgjiSb2XxuyBrK1BYvwKNP" class="mark"><svg data-page-node-id="m2r7GM18fPBnQ6PEGspFeN" style="width:14px; height:14px"><use data-page-node-id="y7ao7seVJoIrtJZx481opP" href="#i-shield"/></svg></span><!--pnid:V0QeEmajWcmpimeuyMpMMO--> 中民康悦 · 微信小程序原型</div>
+  <div data-page-node-id="hJC04PbcNl72thECKZOGAL" class="divider"></div>
+  <div data-page-node-id="KtvV9i1oaWH4Dv1CBVrZbT" class="crumb" id="crumb"></div>
+  <div data-page-node-id="CPMiLS9VloqamztLD4z5Yv" class="zoom"><button data-page-node-id="x44avfWVvrSOw0qywT4jPL" id="zoomOut"><!--pnid:1AS4hsq4QvTpv1QIYHRrJK-->−</button><span data-page-node-id="bPnsIRSKR3Gl9oGWEOORWL" id="zoomVal"><!--pnid:nwLLvBYOpfo7iiDcbwiRX3-->100%</span><button data-page-node-id="e8XFaqOYVhqtYHIJHzOFtp" id="zoomIn"><!--pnid:qIAyf16UCi97vK390jacdT-->+</button></div>
+  <button data-page-node-id="mMBOmyyEKLIPqNZDlVhGlJ" class="tool" id="resetBtn"><!--pnid:l35FQh9lPvV2iXIr06G7ti-->重置</button>
+  <button data-page-node-id="qsM2a8U8y8k9QbnRSC4rQ6" class="tool" id="previewBtn"><!--pnid:8LUTKbJrmgR16R209YCmWy-->预览模式</button>
+</div>
+
+<div data-page-node-id="pFona8a7c4zLR5CKczX1Mt" class="workspace">
+  <aside data-page-node-id="nnSRfYnFMzobaYvqidCSxe" class="side">
+    <h3 data-page-node-id="jNia52Uq6H9QwFJ14EQQVn"><!--pnid:iDZysTmjjLXNHaTWNDaybJ-->页面结构 / SITEMAP</h3>
+    <div data-page-node-id="mMxOPNjq1uGTXf4cCMMnBq" id="tree"></div>
+    <div data-page-node-id="0QXx95yl2POg8nQYe6ZQN1" class="foot"><!--pnid:AdlBrUuQGYGhwOEmqlxW4W-->依据公开信息：中民康悦（北京）健康管理有限公司<br data-page-node-id="1HnQC28teMXbRP5HE1NtdA"><!--pnid:Pf7AyTxl15UO6qmkdC0x45-->面向中央国家机关离退休同志的养老服务平台<br data-page-node-id="dmGbOKqr8njq8hGmli0MTA"><br data-page-node-id="x2DYy6TOIyRBnbvUdHGulL"><!--pnid:Hxsw4IqCvYmsHiepRJzbEC-->原型版本：V1.1 · 15 页</div>
+  </aside>
+
+  <main data-page-node-id="P7Nx7beuBEEJc4m604acEv" class="canvas"><div data-page-node-id="nJ65QhUSi2hZhUQViNyThm" class="canvas-inner">
+    <div data-page-node-id="xVSg9KOFBGwsvEFtcUbhQS" class="phone-label"><!--pnid:ffaSO4rkvqhkPDkVmJTEnU-->iPhone 14 · 390 × 844 · 点击页面元素可跳转</div>
+    <div data-page-node-id="AK3w5Hetr2DaW39ofktFsK" class="phone"><div data-page-node-id="flzCb0CY5p1TsR2GkKu2VH" class="screen" id="screen"></div></div>
+  </div></main>
+
+  <aside data-page-node-id="TMjcferTbrzWqOY8zj5Lbm" class="inspect" id="inspect"></aside>
+</div>
+
+<script data-page-node-id="1UltW251U7AkhgGhevlKq3" data-pnid-children="wTELCPI5DpxP20Yel9yK2y">
+const I = (n,s=20)=>`<svg style="width:${s}px;height:${s}px"><use href="#i-${n}"/></svg>`;
+const TABS=[{id:'home',label:'首页',ic:'home'},{id:'category',label:'服务',ic:'grid'},{id:'orders',label:'订单',ic:'order'},{id:'health',label:'健康',ic:'heart'},{id:'profile',label:'我的',ic:'user'}];
+// 页面 → 所属模块（用于底部模块导航高亮）
+const PAGE_MODULE={home:'home',activity:'home',messages:'home',category:'category','service-list':'category','service-detail':'category',booking:'category',payment:'category','payment-success':'category',orders:'orders','order-detail':'orders',health:'health',profile:'profile','ai-service':'profile',launch:''};
+const modnav=(active)=>`<div class="modnav">${TABS.map(t=>`<div class="mi ${t.id===active?'on':''}" data-go="${t.id}">${I(t.ic,20)}<span>${t.label}</span></div>`).join('')}</div>`;
+// AI 客服政策问答库
+const AI_QA={
+ '预约服务':'预约方式很简单：进入「服务」板块选择所需项目，点击「立即预约」，填写服务日期、时间段和服务地址后提交即可。预约成功后会收到短信提醒，服务人员也会提前与您联系。',
+ '取消政策':'服务开始前 2 小时及以上取消，全额退款且不收取费用；服务开始前 2 小时内取消，将收取服务费的 20% 作为违约金。若因服务方原因取消，全额退款并赠送一次优惠券。',
+ '费用支付':'支持微信支付与家属代付两种方式。助餐服务 25 元/餐起，居家助洁 88 元/次起，陪诊就医 168 元/次起。具体费用以服务详情页显示为准，支付后可在「我的订单」查看明细。',
+ '优惠补贴':'中央国家机关离退休同志可享受专属优惠：助餐服务每餐补贴 5 元，年度体检套餐享 8 折，银卡会员额外享 95 折。补贴在结算时自动抵扣，无需手动申请。',
+ '会员权益':'银卡会员权益包括：服务费用 95 折、每年 2 次免费健康咨询、生日慰问礼包、专属客服优先接入。积分可用于兑换服务或礼品，100 积分抵 1 元。',
+ '人工客服':'您可以拨打专属客服热线 400-818-0606（工作日 8:00–20:00），或在「消息通知」中在线留言，人工客服会在 30 分钟内回复您。'
+};
+const aiAnswer=(q)=>{
+ const k=Object.keys(AI_QA).find(key=>q.includes(key)||key.includes(q));
+ return AI_QA[k]||'抱歉，这个问题我暂时无法回答。您可以换个方式描述，或拨打专属客服热线 400-818-0606 咨询人工客服。';
+};
+const statusbar=()=>`<div class="statusbar"><span>9:41</span><span class="right"><svg style="width:16px;height:12px"><path d="M1 9h2v3H1zM5 6h2v6H5zM9 3h2v9H9zM13 1h2v11h-2z" fill="currentColor" stroke="none"/></svg><svg style="width:15px;height:12px"><path d="M1 4a10 10 0 0 1 13 0M3.5 7a6.5 6.5 0 0 1 8 0M6 10a3 3 0 0 1 3 0"/></svg><span style="font-size:11px">●●●</span><span style="width:22px;height:11px;border:1.5px solid currentColor;border-radius:3px;position:relative;display:inline-block"><i style="position:absolute;inset:1.5px;background:currentColor;border-radius:1px"></i></span></span></div>`;
+const capsule=()=>`<div class="capsule"><i></i><span style="width:1px;height:14px;background:rgba(0,0,0,.12)"></span><span class="dot"></span></div>`;
+const nav=(title,back='home')=>`<div class="navbar"><div class="back" data-go="${back}">${I('back',22)}</div><div class="title">${title}</div><div class="nav-act">${I('search',20)}</div></div>`;
+const tabbar=(active)=>`<div class="tabbar">${TABS.map(t=>`<div class="tab ${t.id===active?'active':''}" data-go="${t.id}">${I(t.ic,23)}<span>${t.label}</span></div>`).join('')}</div>`;
+const svcCard=(name,desc,tags,price,rate,ic,color,go='service-detail')=>`<div class="svc" data-go="${go}"><div class="pic" style="background:${color}">${I(ic,40)}</div><div class="info"><div class="nm">${name}</div><div class="ds">${desc}</div><div class="tags">${tags.map((t,i)=>`<span class="tagline ${i%2?'g':''}">${t}</span>`).join('')}</div><div class="bottom"><div class="price"><small>¥</small>${price}<small> 起</small></div><div class="rate">${I('star',11)} ${rate}</div></div></div></div>`;
+
+const PAGES={
+launch:{
+ group:'启动与引导',title:'启动 / 授权登录',ic:'shield',
+ desc:'首次进入的小程序启动页。提供微信一键登录与手机号登录两种方式，底部展示合规协议入口，符合微信审核规范。',
+ notes:['品牌主色采用中国红 + 暖金，契合离退休同志审美','主按钮高度 50px，字号 17px，便于识别点击','「大字版」提示明确传达适老化定位','首屏只保留登录动作，避免信息过载'],
+ flow:['launch','home'],
+ html:`<div style="flex:1;min-height:0;background:linear-gradient(165deg,#D8620A 0%,#EC7815 60%,#F79530 100%);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;position:relative;overflow:hidden">
+ <div style="position:absolute;width:260px;height:260px;border:1px solid rgba(255,255,255,.14);border-radius:50%;top:-70px;right:-80px"></div>
+ <div style="position:absolute;width:180px;height:180px;border:1px solid rgba(255,255,255,.12);border-radius:50%;bottom:-50px;left:-50px"></div>
+ <div style="width:88px;height:88px;border-radius:26px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;z-index:2">${I('shield',52)}</div>
+ <div style="font-size:30px;font-weight:800;letter-spacing:5px;margin-top:22px;z-index:2">中民康悦</div>
+ <div style="font-size:14px;opacity:.88;margin-top:10px;letter-spacing:1px;z-index:2">用心守护每一段安康岁月</div>
+ <div style="margin-top:60px;width:100%;z-index:2;display:flex;justify-content:center"><button class="btn big" style="background:#fff;color:var(--red);width:220px;flex:none" data-go="home">${I('wechat',20)} 微信一键登录</button></div>
+ <div style="margin-top:12px;width:100%;z-index:2;display:flex;justify-content:center"><button class="btn big" style="background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.5);width:220px;flex:none" data-go="home">手机号登录</button></div>
+ <div style="font-size:11px;opacity:.75;margin-top:20px;text-align:center;line-height:1.7;z-index:2">登录即表示同意《用户协议》与《隐私政策》<br>专为离退休同志打造 · 支持大字版</div>
+ </div>`
+},
+home:{
+ group:'首页模块',title:'首页',ic:'home',
+ desc:'小程序首页。承担身份问候、服务入口分发、通知触达与社区活动导览。信息按「问候 → 搜索 → 公告 → 快捷入口 → 推荐服务 → 活动」的适老阅读顺序排布。',
+ notes:['欢迎语使用「张叔叔」称谓，增强亲切感与专属感','快捷入口 8 项，图标 50px、文字 13px，一屏可完整浏览','公告条使用高对比浅黄底，避免被忽略','底部 Tab 常驻，5 个主功能一键可达','所有卡片点击热区 ≥ 44px'],
+ flow:['launch','home','category','service-detail','activity','messages','profile'],
+ html:`${statusbar()}${capsule()}<div class="scroll">
+ <div class="hero"><div class="top"><div><div class="hi">您好，张叔叔</div><div class="sub">中央国家机关离退休同志专属服务平台</div></div><div style="display:flex;gap:14px;align-items:center"><div class="avatar">${I('user',24)}</div><div class="bell-btn" data-go="messages">${I('bell',22)}<span class="badge">3</span></div></div></div></div>
+ <div class="searchbar" data-go="category">${I('search',18)}<span>搜索服务、活动、健康资讯</span></div>
+ <div class="notice" data-go="messages"><span class="tag">通知</span><span class="txt">2026 年秋季健康体检预约已开启，8 月 20 日截止</span>${I('right',13)}</div>
+ <div class="sec"><div class="sec-h"><div class="t">常用服务</div><div class="more" data-go="category">全部服务 ${I('right',12)}</div></div>
+ <div class="card" style="padding:6px 4px"><div class="grid4">
+  ${[['i-utens','助餐服务','#E8710A','service-list'],['i-broom','助洁服务','#DA7B2E','service-list'],['i-steth','陪诊就医','#2F8A5B','service-list'],['i-pill','康复护理','#3B72AD','service-list'],['i-file','健康档案','#7B5BC4','health'],['i-book','文娱活动','#C05B8E','activity'],['i-phone','紧急联系','#E8721A','messages'],['i-grid','更多服务','#B4853A','category']].map(x=>`<div class="qitem" data-go="${x[3]}"><div class="ic" style="background:${x[2]}"><svg style="width:25px;height:25px"><use href="#${x[0]}"/></svg></div><div class="lb">${x[1]}</div></div>`).join('')}
+ </div></div></div>
+ <div class="sec"><div class="sec-h"><div class="t">为您推荐</div><div class="more" data-go="category">查看更多 ${I('right',12)}</div></div>
+ ${svcCard('营养助餐 · 送餐到家','三菜一汤，低盐低糖可选，专业配送到户',['当日制作','可定制餐'],'25','4.9','i-utens','linear-gradient(135deg,#EC7815,#F8AC50)')}
+ ${svcCard('陪诊就医 · 全程陪同','挂号取药、问诊记录，专人陪同就医',['持证陪诊','全程陪护'],'168','4.8','i-steth','linear-gradient(135deg,#2F8A5B,#6EC5A0)')}
+ </div>
+ <div class="sec"><div class="sec-h"><div class="t">社区活动</div><div class="more" data-go="activity">更多活动 ${I('right',12)}</div></div>
+ <div class="card" style="padding:4px 12px">
+  <div style="padding:11px 0;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;cursor:pointer" data-go="activity"><div style="width:38px;height:38px;border-radius:9px;background:#FFF3E4;color:#D97A1E;display:flex;align-items:center;justify-content:center">${I('cal',19)}</div><div style="flex:1"><b style="font-size:14px;color:var(--ink)">银发学堂 · 书法班开班</b><div style="font-size:12px;color:var(--ink2);margin-top:3px">9 月 12 日 14:00 · 活动中心</div></div>${I('right',14)}</div>
+  <div style="padding:11px 0;display:flex;align-items:center;gap:10px;cursor:pointer" data-go="activity"><div style="width:38px;height:38px;border-radius:9px;background:#FFF0E3;color:var(--red);display:flex;align-items:center;justify-content:center">${I('activity',19)}</div><div style="flex:1"><b style="font-size:14px;color:var(--ink)">秋季健康知识讲座</b><div style="font-size:12px;color:var(--ink2);margin-top:3px">9 月 18 日 10:00 · 线上直播</div></div>${I('right',14)}</div>
+ </div></div>
+ <div class="sec"><div class="ai-banner" data-go="ai-service"><div class="ai-banner-ic">${I('chat',24)}</div><div style="flex:1"><b>有疑问？问问智能客服小悦</b><span>服务政策、预约费用，7×24 小时在线解答</span></div>${I('right',16)}</div></div>
+ <div class="hint">中民康悦 · 用心服务每一位离退休同志</div>
+ </div>`
+},
+category:{
+ group:'服务模块',title:'服务分类',ic:'grid',
+ desc:'全部服务的聚合入口。左侧为大类导航，右侧展示对应大类的服务清单，支持老人单手快速切换，减少页面跳转层级。',
+ notes:['左侧分类栏宽 96px，文字 14px，点击热区 50px','当前分类红色高亮 + 左侧红色指示条，状态明确','服务卡片含价格与简介，降低决策成本','点击「立即预约」直达服务详情'],
+ flow:['home','category','service-detail','booking'],
+ html:`${statusbar()}${capsule()}<div class="navbar"><div class="title">全部服务</div><div class="nav-act">${I('search',20)}</div></div>
+ <div class="searchbar" style="margin:12px 14px" data-go="service-list">${I('search',18)}<span>搜索您需要的服务</span></div>
+ <div class="cat-wrap">
+  <div class="cat-rail" id="catRail">
+   ${[['生活照料','i-broom'],['健康医疗','i-steth'],['文娱活动','i-book'],['便民服务','i-gift'],['关爱服务','i-heart']].map((c,i)=>`<div data-cat="${i}" class="${i===0?'active':''}">${c[0]}</div>`).join('')}
+  </div>
+  <div class="cat-main" id="catMain"></div>
+ </div>`
+},
+'service-list':{
+ group:'服务模块',title:'服务列表',ic:'grid',
+ desc:'按分类展示服务清单，提供排序筛选。卡片信息包含服务图、名称、特色标签、价格与评分，帮助用户快速比对选择。',
+ notes:['筛选项 3 个，字号 14px，点击区域充足','服务卡片图 + 文混排，信息层级清晰','价格红色加粗突出，符合老年人关注点','点击卡片进入服务详情'],
+ flow:['home','category','service-list','service-detail'],
+ html:`${statusbar()}${capsule()}${nav('生活照料','category')}
+ <div class="tabs" id="sortTabs"><div class="active">综合排序</div><div>距离最近</div><div>价格最低</div></div>
+ <div style="margin-top:10px">
+ ${svcCard('营养助餐 · 送餐到家','三菜一汤，低盐低糖可选，专业配送到户',['当日制作','可定制餐'],'25','4.9','i-utens','linear-gradient(135deg,#EC7815,#F8AC50)')}
+ ${svcCard('居家助洁 · 上门保洁','日常清扫、收纳整理，固定服务人员',['固定阿姨','可预约周期'],'88','4.8','i-broom','linear-gradient(135deg,#DA7B2E,#F0B46A)')}
+ ${svcCard('助浴理发 · 上门服务','专业助浴、理发修剪，安全私密',['持证护理','上门服务'],'120','4.9','i-wheel','linear-gradient(135deg,#3B72AD,#7FB0E0)')}
+ ${svcCard('代购代办 · 生活助手','代购生活用品、代办缴费，贴心跑腿',['随叫随到','明码标价'],'30','4.7','i-gift','linear-gradient(135deg,#7B5BC4,#B69BE8)')}
+ </div>
+ `
+},
+'service-detail':{
+ group:'服务模块',title:'服务详情',ic:'file',
+ desc:'单个服务的完整介绍页。包含服务图、价格、服务内容、流程、保障与真实评价，底部固定预约操作栏。',
+ notes:['顶部服务主视觉 170px，图标 76px，辨识度高','服务流程以 4 步图形化呈现，降低理解成本','底部操作栏固定，客服与预约两个动作突出','主要按钮文字 17px，高度 50px'],
+ flow:['home','service-list','service-detail','booking','messages'],
+ html:`${statusbar()}${capsule()}${nav('服务详情','service-list')}
+ <div class="scroll">
+ <div class="hero-detail"><div class="big-ic">${I('utens',38)}</div><div style="font-size:19px;font-weight:800">营养助餐 · 送餐到家</div><div style="font-size:12px;opacity:.85">中央国家机关离退休同志专属优惠价</div></div>
+ <div class="detail-head"><h2>营养助餐 · 送餐到家</h2><div class="meta"><div class="price"><small>¥</small>25<small> / 餐起</small></div><div class="rate">${I('star',12)} 4.9 分 · 已服务 2,300+ 人次</div></div><div class="tags" style="margin-top:9px"><span class="tagline">当日制作</span><span class="tagline g">低盐低糖可选</span><span class="tagline">配送到户</span></div></div>
+ <div class="sec" style="margin:12px 14px"><div class="sec-h"><div class="t">服务内容</div></div><div class="card" style="padding:13px;font-size:13px;color:var(--ink2);line-height:1.85">由持证营养师搭配餐食，两荤一素一汤，食材当日采购制作。可根据高血压、糖尿病等健康状况选择低盐、低糖、软食等定制餐型，保温配送到家。</div></div>
+ <div class="sec" style="margin:12px 14px"><div class="sec-h"><div class="t">服务流程</div></div><div class="card"><div class="steps"><div class="s"><i>1</i>在线预约</div><div class="arr">›</div><div class="s"><i>2</i>确认餐食</div><div class="arr">›</div><div class="s"><i>3</i>制作配送</div><div class="arr">›</div><div class="s"><i>4</i>签收用餐</div></div></div></div>
+ <div class="kv"><div class="k">服务时间</div><div class="v">每日 10:00 – 14:00 配送</div></div>
+ <div class="kv"><div class="k">服务范围</div><div class="v">北京市各区 · 上门配送</div></div>
+ <div class="kv"><div class="k">服务保障</div><div class="v">食材留样 · 保温配送 · 专属客服</div></div>
+ <div class="sec" style="margin:12px 14px"><div class="sec-h"><div class="t">用户评价</div><div class="more">全部 328 条 ${I('right',12)}</div></div><div class="card"><div class="review"><div class="u"><div class="av">${I('user',18)}</div>李阿姨<span style="font-weight:400;color:#9A938A;font-size:11px;margin-left:auto">2026-09-08</span></div><div class="stars">★★★★★</div><p>饭菜口味清淡合适，配送员还会提醒我趁热吃。子女在外地也放心多了。</p></div></div></div>
+ <div class="hint">服务由中民康悦认证服务商提供</div>
+ </div>
+ <div class="bottombar"><div style="display:flex;flex-direction:column;align-items:center;font-size:11px;color:var(--ink2);cursor:pointer;width:58px" data-go="messages">${I('chat',21)}<span style="margin-top:3px">客服</span></div><button class="btn big" data-go="booking">立即预约</button></div>`
+},
+booking:{
+ group:'服务模块',title:'预约下单',ic:'cal',
+ desc:'服务预约表单页。收集服务对象、联系方式、地址、日期时段与餐食偏好，支持周期化预约与备注说明。',
+ notes:['表单项采用「左标签 + 右内容」结构，标签 15px 加粗','日期、时段、餐型使用大按钮 Chip，最小 38px 高','份数使用加减步进器，避免手动输入','底部实时展示合计金额与提交动作'],
+ flow:['service-detail','booking','payment','orders'],
+ html:`${statusbar()}${capsule()}${nav('预约服务','service-detail')}
+ <div class="scroll">
+ <div style="margin:12px 14px;padding:13px;background:#fff;border:1px solid var(--line);border-radius:14px;display:flex;gap:11px;align-items:center"><div style="width:48px;height:48px;border-radius:11px;background:var(--red-soft);color:var(--red);display:flex;align-items:center;justify-content:center">${I('utens',24)}</div><div><b style="font-size:16px;color:var(--ink)">营养助餐 · 送餐到家</b><div style="font-size:12px;color:var(--ink2);margin-top:4px">¥25 / 餐起 · 配送到户</div></div></div>
+ <div class="form-card">
+  <div class="frow"><div class="lb">服务对象</div><div class="val chips"><span class="chip active">本人</span><span class="chip">家属</span></div></div>
+  <div class="frow"><div class="lb">联系人</div><div class="val strong">张建国</div><span class="edit">${I('right',15)}</span></div>
+  <div class="frow"><div class="lb">联系电话</div><div class="val strong">138 **** 6721</div><span class="edit">${I('right',15)}</span></div>
+  <div class="frow"><div class="lb">服务地址</div><div class="val strong">${I('pin',15)} 西城区月坛街道 3 号楼</div><span class="edit">${I('right',15)}</span></div>
+ </div>
+ <div class="sec-h" style="margin:16px 16px 9px"><div class="t" style="font-size:16px">服务日期</div></div>
+ <div style="margin:0 14px" class="chips" id="dateChips"><span class="chip active">今天 9/12</span><span class="chip">明天 9/13</span><span class="chip">后天 9/14</span><span class="chip">9/15 周二</span><span class="chip">9/16 周三</span></div>
+ <div class="sec-h" style="margin:16px 16px 9px"><div class="t" style="font-size:16px">配送时段</div></div>
+ <div style="margin:0 14px" class="chips" id="timeChips"><span class="chip">上午 10:00</span><span class="chip active">中午 12:00</span><span class="chip">下午 14:00</span></div>
+ <div class="sec-h" style="margin:16px 16px 9px"><div class="t" style="font-size:16px">餐食类型</div></div>
+ <div style="margin:0 14px" class="chips" id="mealChips"><span class="chip active">普通餐</span><span class="chip">低盐餐</span><span class="chip">低糖餐</span><span class="chip">软食餐</span></div>
+ <div class="form-card">
+  <div class="frow"><div class="lb">用餐份数</div><div class="val" style="justify-content:flex-end"><div class="stepper"><span id="minus">−</span><b id="qty">2</b><span id="plus">+</span></div></div></div>
+  <div class="frow" style="align-items:flex-start"><div class="lb" style="padding-top:3px">备注</div><textarea rows="2" placeholder="如有特殊情况请在此说明，例如行动不便、过敏食材等"></textarea></div>
+ </div>
+ <div class="hint">预约后可在本页面修改或取消订单</div>
+ </div>
+ <div class="bottombar"><div style="font-size:12px;color:var(--ink2)">合计 <b style="color:var(--red);font-size:21px">¥<span id="total">50</span></b></div><button class="btn big" data-go="payment">提交订单</button></div>`
+},
+payment:{
+ group:'服务模块',title:'确认支付',ic:'wallet',
+ desc:'订单确认与支付页。展示服务项目、时间、地址与费用明细，提供微信支付与家属代付两种方式。',
+ notes:['费用明细逐项列出，金额清晰可核对','支付方式单选，选中态为红色对勾','支持「家属代付」，方便子女远程为父母支付','确认支付按钮高度为 50px'],
+ flow:['booking','payment','payment-success','orders'],
+ html:`${statusbar()}${capsule()}${nav('确认支付','booking')}
+ <div class="scroll">
+ <div class="sum" style="margin-top:12px"><span>服务项目</span><b>营养助餐 · 送餐到家</b></div>
+ <div class="sum"><span>服务日期</span><b>9 月 12 日（周六）</b></div>
+ <div class="sum"><span>配送时段</span><b>中午 12:00</b></div>
+ <div class="sum"><span>餐食 / 份数</span><b>普通餐 × 2</b></div>
+ <div class="sum"><span>服务地址</span><b>西城区月坛街道 3 号楼</b></div>
+ <div class="sum"><span>服务费用</span><b>¥50.00</b></div>
+ <div class="sum"><span>优惠券</span><b style="color:var(--red)">−¥5.00</b></div>
+ <div class="sum total"><span>实付金额</span><b>¥45.00</b></div>
+ <div class="sec-h" style="margin:20px 16px 10px"><div class="t" style="font-size:16px">支付方式</div></div>
+ <div style="margin:0 14px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden">
+  <div class="pay-method" data-pay="0"><div class="mi">${I('wechat',18)}</div><div class="tx">微信支付</div><div class="radio on"></div></div>
+  <div class="pay-method" data-pay="1" style="border-bottom:none"><div class="mi" style="background:#E9A23B">${I('users',18)}</div><div class="tx">家属代付</div><div class="radio"></div></div>
+ </div>
+ <div class="hint">支付即表示同意《服务协议》，服务开始前 2 小时可免费取消</div>
+ </div>
+ <div class="bottombar"><div style="font-size:12px;color:var(--ink2)">实付 <b style="color:var(--red);font-size:21px">¥45.00</b></div><button class="btn big" data-go="payment-success">确认支付</button></div>`
+},
+'payment-success':{
+ group:'服务模块',title:'支付成功',ic:'check',
+ desc:'支付完成反馈页。明确告知预约成功，展示订单编号与关键信息，并给出查看订单、返回首页的后续动作。',
+ notes:['成功状态使用绿色对勾，与品牌红形成语义区分','订单编号可长按复制，便于客服查询','提供温馨提示：服务开始前短信提醒','两个主按钮并列，方便用户选择下一步'],
+ flow:['payment','orders','home'],
+ html:`${statusbar()}${capsule()}
+ <div class="pay-hero"><div class="cc">${I('check',38)}</div><h2>预约成功</h2><p>我们将在配送前 1 小时短信提醒您</p></div>
+ <div style="margin:16px 14px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden">
+  <div class="sum"><span>订单编号</span><b>ZMKY202609120038</b></div>
+  <div class="sum"><span>服务项目</span><b>营养助餐 · 送餐到家</b></div>
+  <div class="sum"><span>服务时间</span><b>9 月 12 日 12:00</b></div>
+  <div class="sum"><span>配送地址</span><b>西城区月坛街道 3 号楼</b></div>
+  <div class="sum"><span>实付金额</span><b style="color:var(--red)">¥45.00</b></div>
+ </div>
+ <div style="margin:16px 14px;padding:13px;background:#FFF8E9;border:1px solid #F3DFB8;border-radius:12px;font-size:12px;color:#6B4A16;line-height:1.7">${I('bell',15)} 温馨提示：如需修改或取消订单，请进入「我的订单」操作，或拨打专属客服热线 400-818-0606。</div>
+ <div style="display:flex;gap:10px;padding:10px 14px 30px"><button class="btn ghost big" data-go="home">返回首页</button><button class="btn big" data-go="orders">查看订单</button></div>`
+},
+orders:{
+ group:'订单模块',title:'订单列表',ic:'order',
+ desc:'我的订单列表。按状态分组，展示服务名称、时间、金额与服务状态，支持查看进度、联系客服与再次预约。',
+ notes:['状态标签使用语义色：待服务红、进行中蓝、已完成绿','订单卡片分隔清晰，字号适中','「再次预约」按钮提升复购效率','底部 Tab 常驻，便于随时切换模块'],
+ flow:['profile','home','orders','order-detail','service-detail'],
+ html:`${statusbar()}${capsule()}<div class="navbar"><div class="title">我的订单</div><div class="nav-act">${I('search',20)}</div></div>
+ <div class="tabs" id="orderTabs"><div class="active">全部</div><div>待服务</div><div>进行中</div><div>已完成</div></div>
+ <div style="padding-bottom:8px">
+ <div class="order"><div class="oh"><span>订单号 ZMKY202609120038</span><b>待服务</b></div><div class="ob"><div class="ic">${I('utens',25)}</div><div><b>营养助餐 · 送餐到家</b><p>9 月 12 日 12:00 · 普通餐 × 2</p><p style="color:var(--red);font-weight:700">¥45.00</p></div></div><div class="of"><button class="mini-btn">联系客服</button><button class="mini-btn primary" data-go="order-detail">查看进度</button></div></div>
+ <div class="order"><div class="oh"><span>订单号 ZMKY202609080112</span><b style="color:var(--blue)">进行中</b></div><div class="ob"><div class="ic" style="background:#EAF2FB;color:var(--blue)">${I('steth',25)}</div><div><b>陪诊就医 · 全程陪同</b><p>9 月 15 日 09:00 · 协和医院</p><p style="color:var(--red);font-weight:700">¥168.00</p></div></div><div class="of"><button class="mini-btn">联系客服</button><button class="mini-btn primary" data-go="order-detail">查看进度</button></div></div>
+ <div class="order"><div class="oh"><span>订单号 ZMKY202608290076</span><b style="color:#9A938A">已完成</b></div><div class="ob"><div class="ic" style="background:#EAF5EE;color:var(--green)">${I('broom',25)}</div><div><b>居家助洁 · 上门保洁</b><p>8 月 29 日 14:00 · 2 小时</p><p style="color:var(--red);font-weight:700">¥88.00</p></div></div><div class="of"><button class="mini-btn">评价服务</button><button class="mini-btn primary" data-go="service-detail">再次预约</button></div></div>
+ </div>
+ `
+},
+'order-detail':{
+ group:'订单模块',title:'订单详情',ic:'order',
+ desc:'订单进度与详情。以时间轴方式展示下单、确认、服务中、完成四个节点，并展示服务人员与订单信息。',
+ notes:['时间轴图形化，已完成节点红色对勾，未完成灰色','服务人员卡片展示姓名、评分与电话，便于直接联系','订单信息分区清晰，关键金额突出','底部提供客服与取消订单入口'],
+ flow:['orders','order-detail','messages'],
+ html:`${statusbar()}${capsule()}${nav('订单详情','orders')}
+ <div class="scroll">
+ <div style="background:linear-gradient(135deg,#E8710A,#F5A03A);color:#fff;padding:20px 16px"><div style="font-size:19px;font-weight:800">陪诊就医 · 全程陪同</div><div style="font-size:13px;opacity:.9;margin-top:6px">服务人员已接单，将于 9 月 15 日 09:00 上门</div></div>
+ <div class="sec-h" style="margin:16px 16px 10px"><div class="t" style="font-size:16px">服务进度</div></div>
+ <div class="card" style="margin:0 14px"><div class="timeline">
+  <div class="tl"><div class="dots"><i>${I('check',9)}</i><div class="line"></div></div><div class="txt"><b>订单已提交</b><span>9 月 12 日 10:24</span><p>您已成功预约陪诊就医服务</p></div></div>
+  <div class="tl"><div class="dots"><i>${I('check',9)}</i><div class="line"></div></div><div class="txt"><b>服务商已接单</b><span>9 月 12 日 11:05</span><p>已为您分配专属陪诊员王秀兰</p></div></div>
+  <div class="tl"><div class="dots"><i style="background:#fff;color:var(--red);border:2px solid var(--red)">3</i><div class="line"></div></div><div class="txt"><b>服务进行中</b><span>预计 9 月 15 日 09:00</span><p>陪诊员将提前 15 分钟到达</p></div></div>
+  <div class="tl"><div class="dots"><i class="off">4</i></div><div class="txt"><b>服务完成</b><span>完成后可评价</span></div></div>
+ </div></div>
+ <div class="sec-h" style="margin:18px 16px 10px"><div class="t" style="font-size:16px">服务人员</div></div>
+ <div class="card" style="margin:0 14px;padding:13px;display:flex;align-items:center;gap:11px"><div style="width:48px;height:48px;border-radius:50%;background:#F0D9B5;color:#8A5A1E;display:flex;align-items:center;justify-content:center">${I('user',24)}</div><div style="flex:1"><b style="font-size:16px;color:var(--ink)">王秀兰</b><div style="font-size:12px;color:var(--ink2);margin-top:4px">持证陪诊员 · ${I('star',11)} 4.9 分</div></div><div style="width:38px;height:38px;border-radius:50%;background:var(--red-soft);color:var(--red);display:flex;align-items:center;justify-content:center;cursor:pointer">${I('phone',19)}</div></div>
+ <div style="margin:14px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden">
+  <div class="sum"><span>订单编号</span><b>ZMKY202609080112</b></div>
+  <div class="sum"><span>服务时间</span><b>9 月 15 日 09:00</b></div>
+  <div class="sum"><span>服务地点</span><b>协和医院门诊楼</b></div>
+  <div class="sum"><span>实付金额</span><b style="color:var(--red)">¥168.00</b></div>
+ </div>
+ <div class="hint">服务过程中如有问题，请随时联系专属客服</div>
+ </div>
+ <div class="bottombar"><button class="btn ghost big" data-go="messages">联系客服</button><button class="btn big" data-go="orders">返回订单列表</button></div>`
+},
+health:{
+ group:'健康与生活',title:'健康档案',ic:'heart',
+ desc:'个人健康数据看板。汇总血压、心率、血糖等日常监测指标，并提供健康提醒与报告入口，支持家属远程查看。',
+ notes:['核心指标大字展示，数值 23px，单位弱化','异常指标用红色警示并给出建议','趋势条直观反映近期变化','体检报告入口直达，便于查看历史记录'],
+ flow:['home','health','messages'],
+ html:`${statusbar()}${capsule()}<div class="navbar"><div class="title">健康档案</div><div class="nav-act">${I('set',20)}</div></div>
+ <div class="scroll">
+ <div class="health-hero"><div class="t">今日健康概览 · 2026 年 9 月 12 日</div><div class="v">状态良好</div><div style="font-size:12px;opacity:.9;margin-top:8px">${I('shield',13)} 数据由智能设备同步，仅供日常参考</div></div>
+ <div class="health-grid">
+  <div class="hcard"><div class="l">血压</div><div class="n">128/82 <small>mmHg</small></div><div class="st">正常范围</div><div class="bar"><i style="width:62%"></i></div></div>
+  <div class="hcard"><div class="l">心率</div><div class="n">72 <small>次/分</small></div><div class="st">正常范围</div><div class="bar"><i style="width:48%"></i></div></div>
+  <div class="hcard"><div class="l">空腹血糖</div><div class="n">6.3 <small>mmol/L</small></div><div class="st" style="color:var(--gold)">略偏高，请注意饮食</div><div class="bar"><i style="width:78%;background:var(--gold)"></i></div></div>
+  <div class="hcard"><div class="l">睡眠时长</div><div class="n">7.2 <small>小时</small></div><div class="st">睡眠良好</div><div class="bar"><i style="width:72%"></i></div></div>
+ </div>
+ <div style="margin:14px;padding:13px;background:#FFF8E9;border:1px solid #F3DFB8;border-radius:12px;font-size:12px;color:#6B4A16;line-height:1.7">${I('bell',15)} 健康提醒：您的空腹血糖略偏高，建议减少甜食摄入，并预约 9 月 18 日的健康讲座了解控糖知识。</div>
+ <div class="plist" style="margin-top:0">
+  <div class="prow" data-go="activity"><div class="mi">${I('file',17)}</div><div class="tx">体检报告</div><span class="ex">2026 年度 ${I('right',13)}</span></div>
+  <div class="prow" data-go="messages"><div class="mi">${I('chat',17)}</div><div class="tx">健康咨询</div><span class="ex">在线问诊 ${I('right',13)}</span></div>
+  <div class="prow" data-go="profile"><div class="mi">${I('users',17)}</div><div class="tx">家属共享</div><span class="ex">已绑定 1 人 ${I('right',13)}</span></div>
+ </div>
+ <div class="hint">健康数据仅供参考，如有不适请及时就医</div>
+ </div>
+ `
+},
+activity:{
+ group:'健康与生活',title:'社区活动',ic:'book',
+ desc:'文娱活动与银发学堂入口。展示近期可报名的讲座、兴趣班与集体活动，支持在线报名与活动提醒。',
+ notes:['活动封面使用渐变色块 + 大字标题，视觉醒目','活动信息包含时间、地点、名额，一目了然','报名按钮突出，点击后可收到日历提醒','内容面向离退休同志，含书法、健康、摄影等主题'],
+ flow:['home','activity','messages'],
+ html:`${statusbar()}${capsule()}<div class="navbar"><div class="title">社区活动</div><div class="nav-act">${I('search',20)}</div></div>
+ <div class="scroll">
+ <div class="tabs" id="actTabs"><div class="active">可报名</div><div>我参加的</div><div>已结束</div></div>
+ <div class="act"><div class="cover" style="background:linear-gradient(135deg,#D8620A,#F58F3A)">银发学堂 · 书法班</div><div class="ab"><b>传统书法公益课堂（第九期）</b><p><span>${I('cal',12)} 9 月 12 日 14:00</span><span>${I('pin',12)} 活动中心 302</span></p><p>剩余名额 8 人 · 免费参加</p><div style="display:flex;justify-content:flex-end;margin-top:10px"><button class="mini-btn primary" data-go="payment-success">立即报名</button></div></div></div>
+ <div class="act"><div class="cover" style="background:linear-gradient(135deg,#1F7A5C,#5BBE96)">秋季健康知识讲座</div><div class="ab"><b>慢病管理与合理膳食专题</b><p><span>${I('cal',12)} 9 月 18 日 10:00</span><span>${I('pin',12)} 线上直播</span></p><p>剩余名额 42 人 · 免费参加</p><div style="display:flex;justify-content:flex-end;margin-top:10px"><button class="mini-btn primary" data-go="payment-success">立即报名</button></div></div></div>
+ <div class="act"><div class="cover" style="background:linear-gradient(135deg,#3B72AD,#87B6E6)">光影留年 · 摄影展</div><div class="ab"><b>离退休同志摄影作品线上展</b><p><span>${I('cal',12)} 9 月 20 日 – 10 月 10 日</span><span>${I('pin',12)} 小程序展厅</span></p><p>欢迎踊跃投稿 · 免费参观</p><div style="display:flex;justify-content:flex-end;margin-top:10px"><button class="mini-btn primary" data-go="payment-success">我要投稿</button></div></div></div>
+ <div class="hint">更多活动将持续更新，敬请关注</div>
+ </div>
+ `
+},
+messages:{
+ group:'个人中心',title:'消息通知',ic:'bell',
+ desc:'消息中心。集中展示系统通知、服务提醒、活动提醒与客服回复，未读消息以红点标记，支持一键已读。',
+ notes:['消息类型以彩色图标区分，便于快速识别','未读消息加粗显示，右侧红点提示','时间信息右对齐，符合阅读习惯','客服消息可直接进入对话页'],
+ flow:['home','messages','orders','activity'],
+ html:`${statusbar()}${capsule()}<div class="navbar"><div class="title">消息通知</div><div class="nav-act" style="font-size:13px;color:var(--red)">全部已读</div></div>
+ <div class="scroll">
+ <div class="msg"><div class="mi" style="background:#2A6FB0">${I('cal',19)}</div><div class="tx"><b>服务提醒</b><span style="float:right;color:#A9A299;font-size:11px">09-12 10:30</span><p>您预约的「陪诊就医」将于 9 月 15 日 09:00 开始，请保持手机畅通</p></div></div>
+ <div class="msg"><div class="mi" style="background:var(--red)">${I('bell',19)}</div><div class="tx"><b>系统通知</b><span style="float:right;color:#A9A299;font-size:11px">09-12 09:00</span><p>2026 年秋季健康体检预约已开启，8 月 20 日截止</p></div></div>
+ <div class="msg"><div class="mi" style="background:#7B5BC4">${I('gift',19)}</div><div class="tx"><b>活动通知</b><span style="float:right;color:#A9A299;font-size:11px">09-11 16:20</span><p>银发学堂书法班（第九期）开放报名，名额有限</p></div></div>
+ <div class="msg" data-go="order-detail"><div class="mi" style="background:var(--green)">${I('chat',19)}</div><div class="tx"><b>客服回复</b><span style="float:right;color:#A9A299;font-size:11px">09-10 14:05</span><p>您好，您的订单已由王秀兰师傅接单，如需调整时间可随时联系我们</p></div></div>
+ <div class="msg"><div class="mi" style="background:#D97A1E">${I('activity',19)}</div><div class="tx"><b>健康提醒</b><span style="float:right;color:#A9A299;font-size:11px">09-09 08:00</span><p>本周血压记录已生成，整体平稳，请继续保持规律作息</p></div></div>
+ <div class="hint">共 5 条消息 · 仅保留最近 30 天记录</div>
+ </div>
+ `
+},
+profile:{
+ group:'个人中心',title:'个人中心',ic:'user',
+ desc:'个人中心页。展示用户身份、会员权益与资产，聚合订单、健康档案、地址、家属联系人、客服与设置等常用功能。',
+ notes:['顶部用户头像 64px，姓名与身份信息醒目','会员权益卡片上浮，层次分明','功能列表图标统一红色系，文字 15px','紧急联系电话置于显眼位置，满足适老安全需求'],
+ flow:['home','profile','orders','health','messages'],
+ html:`${statusbar()}${capsule()}
+ <div class="profile-head"><div class="av">${I('user',32)}</div><div><b>张建国</b><p>中央国家机关离退休同志 · 银卡会员</p><p style="margin-top:3px">手机号 138 **** 6721</p></div><div style="margin-left:auto" data-go="messages">${I('set',20)}</div></div>
+ <div class="scroll">
+ <div class="vip"><div><b>2</b><span>优惠券</span></div><div><b>860</b><span>积分</span></div><div><b>3</b><span>收藏</span></div></div>
+ <div class="plist" style="margin-top:14px">
+  <div class="prow" data-go="orders"><div class="mi">${I('order',17)}</div><div class="tx">我的订单</div><span class="ex">2 个进行中 ${I('right',13)}</span></div>
+  <div class="prow" data-go="health"><div class="mi">${I('heart',17)}</div><div class="tx">健康档案</div><span class="ex">${I('right',13)}</span></div>
+  <div class="prow" data-go="messages"><div class="mi">${I('bell',17)}</div><div class="tx">消息通知</div><span class="ex">3 条未读 ${I('right',13)}</span></div>
+ </div>
+ <div class="plist" style="margin-top:0">
+  <div class="prow"><div class="mi">${I('pin',17)}</div><div class="tx">常用地址</div><span class="ex">2 个 ${I('right',13)}</span></div>
+  <div class="prow"><div class="mi">${I('users',17)}</div><div class="tx">家属联系人</div><span class="ex">已绑定 1 人 ${I('right',13)}</span></div>
+  <div class="prow"><div class="mi">${I('gift',17)}</div><div class="tx">优惠券</div><span class="ex">${I('right',13)}</span></div>
+  <div class="prow"><div class="mi">${I('wheel',17)}</div><div class="tx">大字版设置</div><span class="ex">已开启 ${I('right',13)}</span></div>
+ </div>
+ <div class="plist" style="margin-top:0">
+  <div class="prow" data-go="ai-service"><div class="mi" style="background:#FFF0E3;color:var(--red)">${I('chat',17)}</div><div class="tx">AI客服政策问答</div><span class="ex" style="color:var(--red);font-weight:700">智能解答 ${I('right',13)}</span></div>
+  <div class="prow" data-go="messages"><div class="mi" style="background:#FFF0E3;color:var(--red)">${I('phone',17)}</div><div class="tx">专属客服热线</div><span class="ex" style="color:var(--red);font-weight:700">400-818-0606</span></div>
+  <div class="prow"><div class="mi">${I('help',17)}</div><div class="tx">帮助与反馈</div><span class="ex">${I('right',13)}</span></div>
+  <div class="prow"><div class="mi">${I('shield',17)}</div><div class="tx">关于中民康悦</div><span class="ex">${I('right',13)}</span></div>
+ </div>
+ <div class="hint">中民康悦（北京）健康管理有限公司 · V1.0.0</div>
+ </div>
+ `
+},
+'ai-service':{
+ group:'个人中心',title:'AI客服政策问答',ic:'chat',
+ desc:'AI 智能客服页，7×24 小时解答服务政策类问题。预置常见问题快捷入口，支持自然语言提问，覆盖预约、取消、费用、补贴、会员权益等政策咨询场景。',
+ notes:['顶部展示 AI 身份与服务范围，建立信任感','常见问题以大按钮快捷入口呈现，老人无需打字','对话气泡字号 15px、行距 1.6，阅读舒适','支持语音输入入口，降低打字门槛','底部常驻模块导航，可随时跳转其他模块'],
+ flow:['profile','ai-service','orders','messages'],
+ html:`${statusbar()}${capsule()}${nav('AI客服 · 政策问答','profile')}
+ <div class="ai-wrap">
+  <div class="ai-intro"><div class="ai-avatar">${I('chat',26)}</div><div><b>中民康悦智能客服</b><p>在线解答服务政策问题 · 7×24 小时</p></div><span class="ai-online">在线</span></div>
+  <div class="ai-tip">您好，我是智能客服小悦。您可以直接问我关于服务预约、费用、补贴等问题，也可以点击下方常见问题。</div>
+  <div class="ai-label">常见问题</div>
+  <div class="ai-qa" id="aiQa">
+   ${[['如何预约上门服务？','预约服务'],['订单可以取消吗？怎么收费？','取消政策'],['服务费用怎么支付？','费用支付'],['离退休同志有什么优惠补贴？','优惠补贴'],['会员权益有哪些？','会员权益'],['怎么联系人工客服？','人工客服']].map(x=>`<div class="ai-qbtn" data-q="${x[1]}">${x[0]} ${I('right',13)}</div>`).join('')}
+  </div>
+  <div class="ai-log" id="aiLog"></div>
+ </div>
+ <div class="ai-inputbar"><div class="ai-voice" title="语音输入">${I('chat',20)}</div><input id="aiInput" placeholder="输入您的问题…"/><button class="btn" id="aiSend" style="height:40px;padding:0 16px">发送</button></div>`
+}
+};
+
+// 每个页面的按钮 / 功能 / 逻辑文字完善（右侧标注面板展示，不改变任何页面样式）
+const PAGE_DETAIL={
+launch:[
+ '微信一键登录：调用微信授权获取用户身份，自动完成登录并跳转首页；首次登录会同步微信头像与昵称。',
+ '手机号登录：进入「手机号 + 验证码」登录流程，未注册手机号自动创建账号，老用户直接登录。',
+ '《用户协议》《隐私政策》：点击打开对应条款页，需勾选同意后方可登录（原型默认已同意）。',
+ '登录态逻辑：凭证本地缓存 7 天，在有效期内再次进入自动跳过本页直达首页。',
+ '适老化逻辑：根据「大字版设置」自动放大本页字号，可在个人中心随时切换。'
+],
+home:[
+ '消息铃铛：右上角红点数字为未读消息条数，点击进入「消息通知」。',
+ '搜索框：点击进入服务分类，可按服务名称、活动关键词检索。',
+ '通知公告条：点击直达消息通知，对应「秋季健康体检预约」提醒。',
+ '8 个常用服务入口：助餐 / 助洁 / 陪诊 / 康复护理 → 服务列表；健康档案 → 健康；文娱活动 → 社区活动；紧急联系 → 消息；更多服务 → 服务分类。',
+ '推荐服务卡片：点击进入服务详情，可查看服务内容、用户评价并直接预约。',
+ '社区活动条目：点击进入社区活动列表，查看报名与活动详情。',
+ 'AI 客服横幅：点击进入 AI 政策问答，7×24 小时在线解答服务政策问题。',
+ '底部导航：首页 / 服务 / 订单 / 健康 / 我的 五个模块常驻，点击一键切换。'
+],
+category:[
+ '左侧大类导航：生活照料、健康医疗、文娱活动、便民服务、关爱服务共 5 类，点击即切换右侧列表，当前类红色高亮并显示左侧指示条。',
+ '顶部搜索框：点击进入服务列表页，支持按关键词搜索所需服务。',
+ '顶部搜索图标：与搜索框功能一致，进入服务列表页检索。',
+ '右侧服务卡片：点击进入服务详情，卡片展示名称、简介、价格与图标。',
+ '列表逻辑：每类固定 4 项服务，由 CATS 分类字典驱动，切换分类无需刷新页面。'
+],
+'service-list':[
+ '排序标签：综合排序 / 距离最近 / 价格最低，点击切换选中态（红色高亮），列表按对应规则重新排序。',
+ '服务卡片：点击进入服务详情，含图片、名称、特色标签、价格与评分，价格红色突出便于比对。',
+ '返回按钮：回到服务分类页。',
+ '搜索图标：可输入关键词过滤当前分类下的服务。',
+ '筛选逻辑：排序标签为单选，切换时自动清除上一个选中态。'
+],
+'service-detail':[
+ '返回按钮：回到服务列表页。',
+ '客服按钮：点击进入消息通知中的客服对话入口。',
+ '「立即预约」按钮：进入预约下单页，自动带入当前服务名称与价格。',
+ '服务流程：以 4 步图形化呈现（在线预约 → 确认餐食 → 制作配送 → 签收用餐），降低理解成本。',
+ '用户评价：「全部 328 条」可展开完整评价列表（原型中为跳转占位）。',
+ '服务信息：服务时间、服务范围、服务保障以键值形式展示，便于快速核对。',
+ '交互逻辑：底部操作栏固定，内容滚动时客服与预约按钮始终可见。'
+],
+booking:[
+ '服务对象：本人 / 家属 Chip 单选，选中态为红色高亮。',
+ '联系人 / 联系电话 / 服务地址：点击右侧箭头可进入编辑页修改（原型中为占位）。',
+ '服务日期 / 配送时段 / 餐食类型：均为 Chip 单选，每次只能选择一项。',
+ '用餐份数：使用加减步进器调整，最小 1 份，合计金额 = 份数 × 25 元，实时刷新。',
+ '备注：可填写过敏食材、行动不便等特殊情况，提交后同步给服务方。',
+ '「提交订单」按钮：校验必填项后跳转确认支付页。',
+ '提示逻辑：预约成功后可在「我的订单」中修改或取消订单。'
+],
+payment:[
+ '费用明细：逐项列出服务项目、日期、时段、餐食份数、地址、费用、优惠券与实付金额，方便核对。',
+ '支付方式：微信支付 / 家属代付单选，选中显示红色对勾；家属代付会把支付链接发送给子女远程付款。',
+ '「确认支付」按钮：调起支付，成功后跳转支付成功页。',
+ '价格逻辑：服务费用 ¥50 − 优惠券 ¥5 = 实付 ¥45。',
+ '取消规则：服务开始前 2 小时可免费取消，超时按取消政策收取费用。'
+],
+'payment-success':[
+ '成功状态：绿色对勾 + 「预约成功」文案，明确告知配送前 1 小时会短信提醒。',
+ '订单编号：ZMKY202609120038，可长按复制，便于客服查询。',
+ '「返回首页」按钮：回到首页。',
+ '「查看订单」按钮：进入订单列表查看该笔订单进度。',
+ '温馨提示：修改或取消订单请进入「我的订单」，或拨打专属客服热线 400-818-0606。'
+],
+orders:[
+ '状态标签：全部 / 待服务 / 进行中 / 已完成，点击按状态筛选订单列表。',
+ '「联系客服」按钮：进入消息通知中的客服入口。',
+ '「查看进度」按钮：进入订单详情，查看时间轴与服务人员信息。',
+ '「评价服务」按钮：已完成订单可进入评价流程（原型中为占位）。',
+ '「再次预约」按钮：回到对应服务详情，方便快速复购。',
+ '状态色逻辑：待服务为红、进行中为蓝、已完成为灰，一眼识别订单状态。'
+],
+'order-detail':[
+ '服务进度时间轴：订单已提交 → 服务商已接单 → 服务进行中 → 服务完成，已完成节点为红色对勾，当前节点为红圈数字。',
+ '服务人员卡片：显示姓名、资质与评分，右侧电话按钮可一键拨号联系。',
+ '订单信息：订单编号、服务时间、服务地点与实付金额分区展示。',
+ '「联系客服」按钮：进入消息通知中的客服入口。',
+ '「返回订单列表」按钮：回到订单列表页。',
+ '状态逻辑：服务完成后节点变为可评价状态，可进入评价页。'
+],
+health:[
+ '健康概览：展示今日状态与数据来源说明，数据由智能设备同步，仅供日常参考。',
+ '4 项指标卡：血压、心率、空腹血糖、睡眠时长，均带趋势条；血糖略偏高以金色警示并给出饮食建议。',
+ '「体检报告」：点击查看 2026 年度报告（原型中跳转活动页占位）。',
+ '「健康咨询」：点击进入消息通知中的在线问诊。',
+ '「家属共享」：点击查看已绑定家属（原型中跳转个人中心）。',
+ '设置按钮：进入健康数据与提醒设置（原型中为占位）。',
+ '健康提醒：结合异常指标给出饮食控制与健康讲座建议。'
+],
+activity:[
+ '状态标签：可报名 / 我参加的 / 已结束，点击筛选对应活动。',
+ '「立即报名」按钮：报名成功后跳转支付成功反馈（免费活动原型中复用该成功页占位）。',
+ '「我要投稿」按钮：摄影展投稿入口（原型中为占位）。',
+ '活动卡片：展示封面、标题、时间、地点、剩余名额与费用信息。',
+ '搜索图标：可输入关键词检索活动。',
+ '报名逻辑：剩余名额为 0 时按钮应置灰不可点击。'
+],
+messages:[
+ '「全部已读」按钮：一键清除所有未读红点，消息状态更新为已读。',
+ '消息条目：服务提醒 / 系统通知 / 活动通知 / 客服回复 / 健康提醒，用彩色图标区分类型。',
+ '客服回复消息：点击进入订单详情，查看对应订单沟通记录。',
+ '未读逻辑：未读消息加粗显示并在右侧标记红点，时间右对齐。',
+ '记录策略：仅保留最近 30 天消息，底部提示当前消息总数。'
+],
+profile:[
+ '会员资产：优惠券 2 张、积分 860、收藏 3 项，点击可查看详情（原型中为占位）。',
+ '我的订单 / 健康档案 / 消息通知：跳转对应模块，右侧显示数量角标提示待办。',
+ '常用地址 / 家属联系人 / 优惠券 / 大字版设置：进入对应设置页（原型中为占位）。',
+ 'AI 客服政策问答：点击进入 AI 问答页，快捷咨询政策问题。',
+ '专属客服热线：400-818-0606，点击可一键拨号。',
+ '帮助与反馈 / 关于中民康悦：进入说明页（原型中为占位）。',
+ '设置按钮：进入账号与安全设置（原型中为占位）。'
+],
+'ai-service':[
+ '常见问题按钮：预约、取消、费用、补贴、会员、人工客服共 6 个，点击即自动提问，老人无需打字。',
+ '输入框：支持自然语言提问，点击「发送」或按回车提交。',
+ '语音按钮：预留语音输入入口（原型中为占位）。',
+ '回答逻辑：基于关键词匹配政策问答库，约 350 毫秒后模拟客服回复；未命中时引导拨打人工客服热线。',
+ '返回按钮：回到个人中心。',
+ '底部模块导航：可随时跳转到首页、服务、订单、健康、我的。'
+]
+};
+
+const CATS={
+ 0:{title:'生活照料',items:[['营养助餐 · 送餐到家','三菜一汤，低盐低糖可选','¥25 起','i-utens','#E8710A'],['居家助洁 · 上门保洁','日常清扫、收纳整理','¥88 起','i-broom','#DA7B2E'],['助浴理发 · 上门服务','专业助浴、理发修剪','¥120 起','i-wheel','#3B72AD'],['代购代办 · 生活助手','代购代办，贴心跑腿','¥30 起','i-gift','#7B5BC4']]},
+ 1:{title:'健康医疗',items:[['陪诊就医 · 全程陪同','挂号取药，专人陪同','¥168 起','i-steth','#2F8A5B'],['康复护理 · 上门理疗','专业康复师上门服务','¥120 起','i-pill','#3B72AD'],['健康体检 · 年度套餐','专属离退休同志体检','¥380 起','i-heart','#E8710A'],['在线问诊 · 健康咨询','三甲医生在线答疑','¥29 起','i-chat','#7B5BC4']]},
+ 2:{title:'文娱活动',items:[['银发学堂 · 书法班','传统书法公益课堂','免费','i-book','#C05B8E'],['健康知识讲座','慢病管理与合理膳食','免费','i-activity','#2F8A5B'],['摄影作品展','离退休同志线上影展','免费','i-cam','#3B72AD'],['老年合唱团','每周集体排练','免费','i-users','#DA7B2E']]},
+ 3:{title:'便民服务',items:[['家电维修 · 上门服务','空调、洗衣机等维修','¥60 起','i-set','#B4853A'],['理发修甲 · 社区点位','家门口的便民服务','¥20 起','i-wheel','#C05B8E'],['代缴费用 · 水电燃气','代为办理缴费事宜','¥10 起','i-wallet','#2F8A5B'],['法律咨询 · 公益服务','遗嘱继承等法律问题','免费','i-file','#3B72AD']]},
+ 4:{title:'关爱服务',items:[['节日慰问 · 暖心礼包','中秋春节慰问配送','免费','i-gift','#E8710A'],['心理关爱 · 谈心陪伴','专业心理咨询师','¥80 起','i-heart','#C05B8E'],['紧急联系 · 一键呼叫','24 小时应急响应','免费','i-phone','#E8721A'],['家属共享 · 远程关怀','子女随时查看动态','免费','i-users','#7B5BC4']]}
+};
+
+let current='launch', scale=1;
+const tree=document.getElementById('tree'), screen=document.getElementById('screen'), inspect=document.getElementById('inspect'), crumb=document.getElementById('crumb');
+const groups={};
+Object.keys(PAGES).forEach(k=>{(groups[PAGES[k].group]||(groups[PAGES[k].group]=[])).push(k)});
+tree.innerHTML=Object.entries(groups).map(([g,keys])=>`<h3>${g}</h3><div class="tree-group">${keys.map((k,i)=>`<div class="tree-item" data-page="${k}"><span class="idx">${String(i+1).padStart(2,'0')}</span>${I(PAGES[k].ic,14)}<span>${PAGES[k].title}</span></div>`).join('')}</div>`).join('');
+
+function renderCat(idx){
+ document.querySelectorAll('#catRail div').forEach(d=>d.classList.toggle('active',+d.dataset.cat===idx));
+ const c=CATS[idx];
+ document.getElementById('catMain').innerHTML=`<div class="cat-title">${c.title}</div>${c.items.map(it=>`<div class="cat-card" data-go="service-detail"><div class="ic" style="background:${it[4]}">${I(it[3],22)}</div><div class="tx"><b>${it[0]}</b><span>${it[1]}</span><em>${it[2]}</em></div>${I('right',15)}</div>`).join('')}`;
+ document.querySelectorAll('#catMain [data-go]').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();go(el.dataset.go)}));
+}
+
+function bind(){
+ screen.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();go(el.dataset.go)}));
+ screen.querySelectorAll('[data-cat]').forEach(el=>el.addEventListener('click',()=>renderCat(+el.dataset.cat)));
+ screen.querySelectorAll('.chip').forEach(el=>el.addEventListener('click',()=>{
+  const p=el.parentElement; p.querySelectorAll('.chip').forEach(x=>x.classList.remove('active')); el.classList.add('active');
+ }));
+ screen.querySelectorAll('.tabs div').forEach(el=>el.addEventListener('click',()=>{
+  el.parentElement.querySelectorAll('div').forEach(x=>x.classList.remove('active')); el.classList.add('active');
+ }));
+ screen.querySelectorAll('[data-pay]').forEach(el=>el.addEventListener('click',()=>{
+  screen.querySelectorAll('[data-pay]').forEach(x=>{x.querySelector('.radio').classList.remove('on')}); el.querySelector('.radio').classList.add('on');
+ }));
+ const minus=screen.querySelector('#minus'), plus=screen.querySelector('#plus');
+ if(minus){
+  const upd=()=>{const n=+screen.querySelector('#qty').textContent;screen.querySelector('#total').textContent=n*25};
+  minus.onclick=()=>{const q=screen.querySelector('#qty');if(+q.textContent>1){q.textContent=+q.textContent-1;upd()}};
+  plus.onclick=()=>{const q=screen.querySelector('#qty');q.textContent=+q.textContent+1;upd()};
+ }
+ // AI 客服问答
+ const aiLog=screen.querySelector('#aiLog');
+ if(aiLog){
+  const ask=(q)=>{
+   if(!q.trim())return;
+   aiLog.insertAdjacentHTML('beforeend',`<div class="ai-msg q">${q}</div>`);
+   setTimeout(()=>{
+    aiLog.insertAdjacentHTML('beforeend',`<div class="ai-msg a">${aiAnswer(q)}</div>`);
+    aiLog.parentElement.scrollTop=aiLog.parentElement.scrollHeight;
+   },350);
+   aiLog.parentElement.scrollTop=aiLog.parentElement.scrollHeight;
+  };
+  screen.querySelectorAll('[data-q]').forEach(el=>el.addEventListener('click',()=>ask(el.dataset.q)));
+  const input=screen.querySelector('#aiInput'), send=screen.querySelector('#aiSend');
+  send.onclick=()=>{ask(input.value);input.value=''};
+  input.onkeydown=e=>{if(e.key==='Enter'){ask(input.value);input.value=''}};
+ }
+}
+
+function go(id){
+ if(!PAGES[id])return;
+ current=id;
+ const p=PAGES[id];
+ screen.innerHTML=p.html+modnav(PAGE_MODULE[id]||'');
+ document.querySelectorAll('.tree-item').forEach(el=>el.classList.toggle('active',el.dataset.page===id));
+ crumb.innerHTML=`原型 / <b>${p.group}</b> / ${p.title}`;
+ inspect.innerHTML=`<div class="hd"><h2>${p.title}</h2><p>${p.group} · ${Object.keys(PAGES).indexOf(id)+1} / ${Object.keys(PAGES).length}</p></div>
+ <div class="blk"><h4>页面说明</h4><div class="desc">${p.desc}</div></div>
+ <div class="blk"><h4>交互与跳转</h4><div class="path">${p.flow.map(f=>`<span class="badge">${PAGES[f].title}</span>`).join('')}</div></div>
+ <div class="blk"><h4>设计要点 / 适老化</h4><ul>${p.notes.map(n=>`<li>${n}</li>`).join('')}</ul></div>
+ <div class="blk"><h4>按钮 / 功能 / 逻辑细节</h4><ul>${(PAGE_DETAIL[id]||[]).map(n=>`<li>${n}</li>`).join('')}</ul></div>
+ <div class="blk"><h4>实现标注</h4><span class="badge">可点击跳转</span><span class="badge">固定 Tab 栏</span><span class="badge">大字模式</span><span class="badge">高对比配色</span></div>`;
+ bind();
+ if(id==='category')renderCat(0);
+ screen.parentElement.parentElement.scrollTop=0;
+ document.querySelector('.scroll')?.scrollTo(0,0);
+}
+
+tree.addEventListener('click',e=>{const it=e.target.closest('.tree-item');if(it)go(it.dataset.page)});
+document.getElementById('zoomIn').onclick=()=>{scale=Math.min(1.3,scale+.1);document.querySelector('.canvas-inner').style.transform=`scale(${scale})`};
+document.getElementById('zoomOut').onclick=()=>{scale=Math.max(.6,scale-.1);document.querySelector('.canvas-inner').style.transform=`scale(${scale})`};
+document.getElementById('zoomVal').textContent='100%';
+const setZoom=()=>document.getElementById('zoomVal').textContent=Math.round(scale*100)+'%';
+document.getElementById('zoomIn').onclick=()=>{scale=Math.min(1.3,scale+.1);document.querySelector('.canvas-inner').style.transform=`scale(${scale})`;setZoom()};
+document.getElementById('zoomOut').onclick=()=>{scale=Math.max(.6,scale-.1);document.querySelector('.canvas-inner').style.transform=`scale(${scale})`;setZoom()};
+document.getElementById('resetBtn').onclick=()=>{scale=1;document.querySelector('.canvas-inner').style.transform='scale(1)';setZoom();go('launch')};
+document.getElementById('previewBtn').onclick=e=>{document.body.classList.toggle('preview');e.target.classList.toggle('on');e.target.textContent=document.body.classList.contains('preview')?'退出预览':'预览模式'};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.classList.contains('preview'))document.getElementById('previewBtn').click()});
+go('launch');
+</script>
+</body>
+</html>
